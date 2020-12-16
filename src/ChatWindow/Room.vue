@@ -302,6 +302,7 @@
 						v-if="showFiles"
 						type="file"
 						ref="file"
+						:accept="acceptedFiles"
 						@change="onFileChange($event.target.files)"
 						style="display:none"
 					/>
@@ -373,7 +374,8 @@ export default {
 		textFormatting: { type: Boolean, required: true },
 		loadingRooms: { type: Boolean, required: true },
 		roomInfo: { type: Function },
-		textareaAction: { type: Function }
+		textareaAction: { type: Function },
+		acceptedFiles: { type: String, default: '*' }
 	},
 
 	data() {
@@ -417,11 +419,9 @@ export default {
 			this.hideOptions = true
 			setTimeout(() => {
 				if (!e.target) return
-
-				const { scrollHeight, clientHeight, scrollTop } = e.target
-				const bottomScroll = scrollHeight - clientHeight - scrollTop
-
-				this.scrollIcon = bottomScroll > 1000
+				this.scrollIcon =
+					e.target.scrollHeight > 500 &&
+					e.target.scrollHeight - e.target.scrollTop > 1000
 			}, 200)
 		})
 
