@@ -1,15 +1,18 @@
-export default (items, prop, val, startsWith = false) => {
+export default (items, prop, val) => {
 	if (!val || val === '') return items
 
 	return items.filter(v => {
-		if (startsWith) return formatString(v[prop]).startsWith(formatString(val))
-		return formatString(v[prop]).includes(formatString(val))
+		return (
+			v[prop]
+				.toLowerCase()
+				.normalize('NFD')
+				.replace(/[\u0300-\u036f]/g, '')
+				.indexOf(
+					val
+						.toLowerCase()
+						.normalize('NFD')
+						.replace(/[\u0300-\u036f]/g, '')
+				) > -1
+		)
 	})
-}
-
-function formatString(string) {
-	return string
-		.toLowerCase()
-		.normalize('NFD')
-		.replace(/[\u0300-\u036f]/g, '')
 }

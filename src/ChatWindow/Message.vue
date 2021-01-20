@@ -75,7 +75,7 @@
 
 						<div v-else-if="!message.file">
 							<format-message
-								:content="message.content"
+								:content="this.message.content"
 								:text-formatting="textFormatting"
 							>
 								<template v-slot:deleted-icon="data">
@@ -125,7 +125,7 @@
 								</transition>
 							</div>
 							<format-message
-								:content="message.content"
+								:content="this.message.content"
 								:text-formatting="textFormatting"
 							></format-message>
 						</div>
