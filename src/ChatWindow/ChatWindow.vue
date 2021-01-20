@@ -320,6 +320,7 @@ export default {
 	border: var(--chat-container-border);
 	border-radius: var(--chat-container-border-radius);
 	box-shadow: var(--chat-container-box-shadow);
+	-webkit-tap-highlight-color: transparent;
 
 	* {
 		font-family: inherit;
@@ -327,6 +328,7 @@ export default {
 
 	a {
 		color: #0d579c;
+		font-weight: 500;
 	}
 
 	.vac-chat-container {

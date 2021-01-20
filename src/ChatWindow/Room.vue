@@ -168,7 +168,11 @@
 			v-show="Object.keys(room).length && showFooter"
 		>
 			<transition name="vac-slide-up">
-				<div v-if="messageReply" class="vac-reply-container">
+				<div
+					v-if="messageReply"
+					class="vac-reply-container"
+					:style="{ bottom: `${roomFooterHeight}px` }"
+				>
 					<div class="vac-reply-box">
 						<img
 							v-if="isImageCheck(messageReply.file)"
@@ -191,7 +195,36 @@
 				</div>
 			</transition>
 
-			<div class="vac-box-footer">
+			<transition name="vac-slide-up">
+				<div
+					v-if="filteredUsersTag.length"
+					class="vac-tags-container vac-app-box-shadow"
+					:style="{ bottom: `${roomFooterHeight}px` }"
+				>
+					<div
+						class="vac-tags-box"
+						v-for="user in filteredUsersTag"
+						:key="user._id"
+						@click="selectUserTag(user)"
+					>
+						<div class="vac-tags-info">
+							<div
+								v-if="user.avatar"
+								class="vac-room-avatar vac-tags-avatar"
+								:style="{ 'background-image': `url('${user.avatar}')` }"
+							></div>
+							<div class="vac-tags-username">
+								{{ user.username }}
+							</div>
+						</div>
+					</div>
+				</div>
+			</transition>
+
+			<div
+				class="vac-box-footer"
+				:class="{ 'vac-app-box-shadow': filteredUsersTag.length }"
+			>
 				<div class="vac-icon-textarea-left" v-if="showAudio && !imageFile">
 					<div class="vac-svg-button" @click="recordAudio">
 						<slot
@@ -255,7 +288,7 @@
 					}"
 					v-model="message"
 					@input="onChangeInput"
-					@keydown.esc="resetMessage"
+					@keydown.esc="escapeTextarea"
 					@keydown.enter.exact.prevent=""
 				></textarea>
 
@@ -339,6 +372,7 @@ import EmojiPicker from './EmojiPicker'
 
 const { messagesValid } = require('../utils/roomValidation')
 const { detectMobile, iOSDevice } = require('../utils/mobileDetection')
+import filteredUsers from '../utils/filterItems'
 import typingText from '../utils/typingText'
 
 export default {
@@ -402,33 +436,40 @@ export default {
 			recorderStream: {},
 			recorder: {},
 			recordedChunks: [],
-			keepKeyboardOpen: false
+			keepKeyboardOpen: false,
+			filteredUsersTag: [],
+			selectedUsersTag: [],
+			textareaCursorPosition: null,
+			roomFooterHeight: 0
 		}
 	},
 
 	mounted() {
 		this.newMessages = []
+		const isMobile = detectMobile()
 
 		window.addEventListener('keyup', e => {
 			if (e.keyCode === 13 && !e.shiftKey) {
-				if (detectMobile()) {
+				if (isMobile) {
 					this.message = this.message + '\n'
 					setTimeout(() => this.onChangeInput(), 0)
 				} else {
 					this.sendMessage()
 				}
 			}
+
+			this.updateShowUsersTag()
 		})
 
-		if (detectMobile()) {
-			this.$refs['roomTextarea'].addEventListener('blur', () =>
-				setTimeout(() => (this.keepKeyboardOpen = false), 0)
-			)
-			this.$refs['roomTextarea'].addEventListener(
-				'click',
-				() => (this.keepKeyboardOpen = true)
-			)
-		}
+		this.$refs['roomTextarea'].addEventListener('click', () => {
+			if (isMobile) this.keepKeyboardOpen = true
+			this.updateShowUsersTag()
+		})
+
+		this.$refs['roomTextarea'].addEventListener('blur', () => {
+			this.resetUsersTag()
+			if (isMobile) setTimeout(() => (this.keepKeyboardOpen = false), 0)
+		})
 
 		this.$refs.scrollContainer.addEventListener('scroll', e => {
 			this.hideOptions = true
@@ -545,6 +586,85 @@ export default {
 	},
 
 	methods: {
+		updateShowUsersTag() {
+			if (!this.$refs['roomTextarea']) return
+			if (!this.room.users || this.room.users.length <= 2) return
+
+			if (
+				this.textareaCursorPosition ===
+				this.$refs['roomTextarea'].selectionStart
+			) {
+				return
+			}
+
+			this.textareaCursorPosition = this.$refs['roomTextarea'].selectionStart
+
+			let position = this.textareaCursorPosition
+
+			while (
+				position > 0 &&
+				this.message.charAt(position - 1) !== '@' &&
+				this.message.charAt(position - 1) !== ' '
+			) {
+				position--
+			}
+
+			const beforeTag = this.message.charAt(position - 2)
+			const notLetterNumber = !beforeTag.match(/^[0-9a-zA-Z]+$/)
+
+			if (
+				this.message.charAt(position - 1) === '@' &&
+				(!beforeTag || beforeTag === ' ' || notLetterNumber)
+			) {
+				const query = this.message.substring(
+					position,
+					this.textareaCursorPosition
+				)
+
+				this.filteredUsersTag = filteredUsers(
+					this.room.users,
+					'username',
+					query,
+					true
+				).filter(user => user._id !== this.currentUserId)
+			} else {
+				this.resetUsersTag()
+			}
+		},
+		selectUserTag(user) {
+			const cursorPosition = this.$refs['roomTextarea'].selectionStart
+
+			let position = cursorPosition
+			while (position > 0 && this.message.charAt(position - 1) !== '@') {
+				position--
+			}
+
+			let endPosition = position
+			while (
+				this.message.charAt(endPosition) &&
+				this.message.charAt(endPosition).trim()
+			) {
+				endPosition++
+			}
+
+			const space = this.message.substr(endPosition, endPosition).length
+				? ''
+				: ' '
+
+			this.message =
+				this.message.substr(0, position) +
+				user.username +
+				space +
+				this.message.substr(endPosition, this.message.length - 1)
+
+			this.selectedUsersTag = [...this.selectedUsersTag, { ...user }]
+
+			this.focusTextarea()
+		},
+		resetUsersTag() {
+			this.filteredUsersTag = []
+			this.textareaCursorPosition = null
+		},
 		onImgLoad() {
 			let height = this.$refs.imageFile.height
 			if (height < 30) height = 30
@@ -624,6 +744,10 @@ export default {
 		addNewMessage(message) {
 			this.newMessages.push(message)
 		},
+		escapeTextarea() {
+			if (this.filteredUsersTag.length) this.filteredUsersTag = []
+			else this.resetMessage()
+		},
 		resetMessage(disableMobileFocus = null, editFile = null) {
 			this.$emit('typing-message', null)
 
@@ -633,6 +757,8 @@ export default {
 				return
 			}
 
+			this.selectedUsersTag = []
+			this.resetUsersTag()
 			this.resetTextareaSize()
 			this.message = ''
 			this.editedMessage = {}
@@ -668,22 +794,33 @@ export default {
 			if (this.keepKeyboardOpen) this.$refs['roomTextarea'].focus()
 		},
 		sendMessage() {
-			if (!this.file && !this.message.trim()) return
+			let message = this.message.trim()
+
+			if (!this.file && !message) return
+
+			this.selectedUsersTag.forEach(user => {
+				message = message.replace(
+					`@${user.username}`,
+					`<usertag>${user._id}</usertag>`
+				)
+			})
 
 			if (this.editedMessage._id) {
-				if (this.editedMessage.content !== this.message || this.file) {
+				if (this.editedMessage.content !== message || this.file) {
 					this.$emit('edit-message', {
 						messageId: this.editedMessage._id,
-						newContent: this.message.trim(),
+						newContent: message,
 						file: this.file,
-						replyMessage: this.messageReply
+						replyMessage: this.messageReply,
+						usersTag: this.selectedUsersTag
 					})
 				}
 			} else {
 				this.$emit('send-message', {
-					content: this.message.trim(),
+					content: message,
 					file: this.file,
-					replyMessage: this.messageReply
+					replyMessage: this.messageReply,
+					usersTag: this.selectedUsersTag
 				})
 			}
 
@@ -755,6 +892,10 @@ export default {
 
 			el.style.height = 0
 			el.style.height = el.scrollHeight - padding * 2 + 'px'
+
+			setTimeout(() => {
+				this.roomFooterHeight = this.$refs['roomFooter'].clientHeight
+			}, 10)
 		},
 		addEmoji(emoji) {
 			this.message += emoji.icon
@@ -942,7 +1083,7 @@ export default {
 }
 
 .vac-room-footer {
-	width: calc(100% - 1px);
+	width: 100%;
 	border-bottom-right-radius: 4px;
 	z-index: 10;
 }
@@ -954,12 +1095,56 @@ export default {
 	padding: 10px 8px 10px;
 }
 
+.vac-tags-container {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+
+	.vac-tags-box {
+		display: flex;
+		width: 100%;
+		overflow: hidden;
+		cursor: pointer;
+		background: var(--chat-footer-bg-color);
+
+		&:hover {
+			background: var(--chat-footer-bg-color-tag-active);
+			transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+		}
+
+		&:not(:hover) {
+			transition: background-color 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+		}
+	}
+
+	.vac-tags-info {
+		display: flex;
+		overflow: hidden;
+		padding: 10px 20px;
+		align-items: center;
+	}
+
+	.vac-tags-avatar {
+		height: 34px;
+		width: 34px;
+		min-height: 34px;
+		min-width: 34px;
+	}
+
+	.vac-tags-username {
+		font-size: 14px;
+	}
+}
+
 .vac-reply-container {
+	position: absolute;
 	display: flex;
 	padding: 10px 10px 0 10px;
-	background: var(--chat-content-bg-color);
+	background: var(--chat-footer-bg-color);
 	align-items: center;
-	max-width: 100%;
+	width: calc(100% - 20px);
 
 	.vac-reply-box {
 		width: 100%;
@@ -1252,6 +1437,11 @@ export default {
 
 	.vac-reply-container {
 		padding: 5px 8px;
+		width: calc(100% - 16px);
+	}
+
+	.vac-tags-container .vac-tags-info {
+		padding: 8px 12px;
 	}
 
 	.vac-icon-scroll {
