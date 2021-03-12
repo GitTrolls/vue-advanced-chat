@@ -472,8 +472,7 @@ messages="[
       type: 'png',
       audio: true,
       duration: 14.4,
-      url: 'https://firebasestorage.googleapis.com/...',
-      preview: 'data:image/png;base64,iVBORw0KGgoAA...'
+      url: 'https://firebasestorage.googleapis.com/...'
     },
     reactions: {
       wink: [
