@@ -51,7 +51,6 @@
 			:room-actions="roomActions"
 			:menu-actions="menuActions"
 			:room-message="roomMessage"
-			:templates-text="templatesText"
 			@fetch-more-rooms="fetchMoreRooms"
 			@fetch-messages="fetchMessages"
 			@send-message="sendMessage"
@@ -142,21 +141,7 @@ export default {
 				{ name: 'removeUser', title: 'Remove User' },
 				{ name: 'deleteRoom', title: 'Delete Room' }
 			],
-			styles: { container: { borderRadius: '4px' } },
-			templatesText: [
-				{
-					tag: 'help',
-					text: 'This is the help'
-				},
-				{
-					tag: 'action',
-					text: 'this is the action'
-				},
-				{
-					tag: 'action 2',
-					text: 'this is the second action'
-				}
-			]
+			styles: { container: { borderRadius: '4px' } }
 			// ,dbRequestCount: 0
 		}
 	},
@@ -382,7 +367,9 @@ export default {
 				// this.incrementDbCounter('Fetch Room Messages', messages.size)
 				if (this.selectedRoom !== room.roomId) return
 
-				if (messages.empty) this.messagesLoaded = true
+				if (messages.empty || messages.docs.length < this.messagesPerPage) {
+					this.messagesLoaded = true
+				}
 
 				if (this.startMessages) this.endMessages = this.startMessages
 				this.startMessages = messages.docs[messages.docs.length - 1]
