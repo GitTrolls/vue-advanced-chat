@@ -24,7 +24,7 @@
 			@room-info="$emit('room-info')"
 			@menu-action-handler="$emit('menu-action-handler', $event)"
 		>
-			<template v-for="(i, name) in $scopedSlots" #[name]="data">
+			<template v-for="(i, name) in $slots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
 		</room-header>
@@ -36,7 +36,7 @@
 			@scroll="onContainerScroll"
 		>
 			<loader :show="loadingMessages">
-				<template v-for="(idx, name) in $scopedSlots" #[name]="data">
+				<template v-for="(idx, name) in $slots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
 			</loader>
@@ -59,7 +59,7 @@
 						id="infinite-loader-messages"
 					>
 						<loader :show="true" :infinite="true">
-							<template v-for="(idx, name) in $scopedSlots" #[name]="data">
+							<template v-for="(idx, name) in $slots" #[name]="data">
 								<slot :name="name" v-bind="data" />
 							</template>
 						</loader>
@@ -89,7 +89,7 @@
 								@send-message-reaction="sendMessageReaction"
 								@hide-options="hideOptions = $event"
 							>
-								<template v-for="(idx, name) in $scopedSlots" #[name]="data">
+								<template v-for="(idx, name) in $slots" #[name]="data">
 									<slot :name="name" v-bind="data" />
 								</template>
 							</message>
@@ -154,7 +154,7 @@
 				:link-options="linkOptions"
 				@reset-message="resetMessage"
 			>
-				<template v-for="(i, name) in $scopedSlots" #[name]="data">
+				<template v-for="(i, name) in $slots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
 			</room-message-reply>
@@ -164,7 +164,7 @@
 				@remove-file="removeFile"
 				@reset-message="resetMessage"
 			>
-				<template v-for="(i, name) in $scopedSlots" #[name]="data">
+				<template v-for="(i, name) in $slots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
 			</room-files>
@@ -249,7 +249,7 @@
 						@add-emoji="addEmoji"
 						@open-emoji="emojiOpened = $event"
 					>
-						<template v-for="(i, name) in $scopedSlots" #[name]="data">
+						<template v-for="(i, name) in $slots" #[name]="data">
 							<slot :name="name" v-bind="data" />
 						</template>
 					</emoji-picker-container>
@@ -301,7 +301,6 @@
 </template>
 
 <script>
-import vClickOutside from 'v-click-outside'
 import { Database } from 'emoji-picker-element'
 
 import Loader from '../../components/Loader/Loader'
@@ -316,6 +315,7 @@ import RoomEmojis from './RoomEmojis/RoomEmojis'
 import RoomTemplatesText from './RoomTemplatesText/RoomTemplatesText'
 import Message from '../Message/Message'
 
+import vClickOutside from '../../utils/on-click-outside'
 import filteredItems from '../../utils/filter-items'
 import Recorder from '../../utils/recorder'
 
@@ -347,7 +347,7 @@ export default {
 	},
 
 	directives: {
-		clickOutside: vClickOutside.directive
+		clickOutside: vClickOutside
 	},
 
 	props: {
@@ -577,7 +577,7 @@ export default {
 		})
 	},
 
-	beforeDestroy() {
+	beforeUnmount() {
 		this.stopRecorder()
 	},
 
