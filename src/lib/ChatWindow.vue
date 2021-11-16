@@ -16,7 +16,6 @@
 				:text-formatting="textFormatting"
 				:link-options="linkOptions"
 				:is-mobile="isMobile"
-				:scroll-distance="scrollDistance"
 				@fetch-room="fetchRoom"
 				@fetch-more-rooms="fetchMoreRooms"
 				@loading-more-rooms="loadingMoreRooms = $event"
@@ -56,7 +55,6 @@
 				:loading-rooms="loadingRooms"
 				:room-info-enabled="roomInfoEnabled"
 				:textarea-action-enabled="textareaActionEnabled"
-				:scroll-distance="scrollDistance"
 				:accepted-files="acceptedFiles"
 				:templates-text="templatesText"
 				@toggle-rooms-list="toggleRoomsList"
@@ -145,7 +143,6 @@ export default {
 		roomInfoEnabled: { type: Boolean, default: false },
 		textareaActionEnabled: { type: Boolean, default: false },
 		roomMessage: { type: String, default: '' },
-		scrollDistance: { type: Number, default: 60 },
 		acceptedFiles: { type: String, default: '*' },
 		templatesText: { type: Array, default: null }
 	},
