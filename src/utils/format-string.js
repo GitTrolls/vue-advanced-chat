@@ -1,57 +1,10 @@
 const linkify = require('linkifyjs')
 // require('linkifyjs/plugins/hashtag')(linkify)
 
-export default (text, doLinkify, textFormatting) => {
-	const typeMarkdown = {
-		bold: textFormatting.bold,
-		italic: textFormatting.italic,
-		strike: textFormatting.strike,
-		underline: textFormatting.underline,
-		multilineCode: textFormatting.multilineCode,
-		inlineCode: textFormatting.inlineCode
-	}
+export default (text, doLinkify) => {
+	const json = compileToJSON(text)
 
-	const pseudoMarkdown = {
-		[typeMarkdown.bold]: {
-			end: '\\' + typeMarkdown.bold,
-			allowed_chars: '.',
-			type: 'bold'
-		},
-		[typeMarkdown.italic]: {
-			end: typeMarkdown.italic,
-			allowed_chars: '.',
-			type: 'italic'
-		},
-		[typeMarkdown.strike]: {
-			end: typeMarkdown.strike,
-			allowed_chars: '.',
-			type: 'strike'
-		},
-		[typeMarkdown.underline]: {
-			end: typeMarkdown.underline,
-			allowed_chars: '.',
-			type: 'underline'
-		},
-		[typeMarkdown.multilineCode]: {
-			end: typeMarkdown.multilineCode,
-			allowed_chars: '(.|\n)',
-			type: 'multiline-code'
-		},
-		[typeMarkdown.inlineCode]: {
-			end: typeMarkdown.inlineCode,
-			allowed_chars: '.',
-			type: 'inline-code'
-		},
-		'<usertag>': {
-			allowed_chars: '.',
-			end: '</usertag>',
-			type: 'tag'
-		}
-	}
-
-	const json = compileToJSON(text, pseudoMarkdown)
-
-	const html = compileToHTML(json, pseudoMarkdown)
+	const html = compileToHTML(json)
 
 	const result = [].concat.apply([], html)
 
@@ -60,7 +13,52 @@ export default (text, doLinkify, textFormatting) => {
 	return result
 }
 
-function compileToJSON(str, pseudoMarkdown) {
+const typeMarkdown = {
+	bold: '*',
+	italic: '_',
+	strike: '~',
+	underline: '°'
+}
+
+const pseudoMarkdown = {
+	[typeMarkdown.bold]: {
+		end: '\\' + [typeMarkdown.bold],
+		allowed_chars: '.',
+		type: 'bold'
+	},
+	[typeMarkdown.italic]: {
+		end: [typeMarkdown.italic],
+		allowed_chars: '.',
+		type: 'italic'
+	},
+	[typeMarkdown.strike]: {
+		end: [typeMarkdown.strike],
+		allowed_chars: '.',
+		type: 'strike'
+	},
+	[typeMarkdown.underline]: {
+		end: [typeMarkdown.underline],
+		allowed_chars: '.',
+		type: 'underline'
+	},
+	'```': {
+		end: '```',
+		allowed_chars: '(.|\n)',
+		type: 'multiline-code'
+	},
+	'`': {
+		end: '`',
+		allowed_chars: '.',
+		type: 'inline-code'
+	},
+	'<usertag>': {
+		allowed_chars: '.',
+		end: '</usertag>',
+		type: 'tag'
+	}
+}
+
+function compileToJSON(str) {
 	let result = []
 	let minIndexOf = -1
 	let minIndexOfKey = null
@@ -88,7 +86,7 @@ function compileToJSON(str, pseudoMarkdown) {
 		let strRight = str.substr(minIndexOf + links[0].value.length)
 		result.push(strLeft)
 		result.push(strLink)
-		result = result.concat(compileToJSON(strRight, pseudoMarkdown))
+		result = result.concat(compileToJSON(strRight))
 		return result
 	}
 
@@ -123,14 +121,14 @@ function compileToJSON(str, pseudoMarkdown) {
 			}
 			const object = {
 				start: char,
-				content: compileToJSON(match[1], pseudoMarkdown),
+				content: compileToJSON(match[1]),
 				end: match[2],
 				type: pseudoMarkdown[char].type
 			}
 			result.push(object)
 			strRight = strRight.substr(match[0].length)
 		}
-		result = result.concat(compileToJSON(strRight, pseudoMarkdown))
+		result = result.concat(compileToJSON(strRight))
 		return result
 	} else {
 		if (str) {
@@ -141,7 +139,7 @@ function compileToJSON(str, pseudoMarkdown) {
 	}
 }
 
-function compileToHTML(json, pseudoMarkdown) {
+function compileToHTML(json) {
 	const result = []
 
 	json.forEach(item => {

@@ -3,10 +3,7 @@
 		class="vac-format-message-wrapper"
 		:class="{ 'vac-text-ellipsis': singleLine }"
 	>
-		<div
-			v-if="!textFormatting.disabled"
-			:class="{ 'vac-text-ellipsis': singleLine }"
-		>
+		<div v-if="textFormatting" :class="{ 'vac-text-ellipsis': singleLine }">
 			<div
 				v-for="(message, i) in linkifiedMessage"
 				:key="i"
@@ -75,7 +72,7 @@ export default {
 		linkify: { type: Boolean, default: true },
 		singleLine: { type: Boolean, default: false },
 		reply: { type: Boolean, default: false },
-		textFormatting: { type: Object, required: true },
+		textFormatting: { type: Boolean, required: true },
 		linkOptions: { type: Object, required: true }
 	},
 
@@ -86,7 +83,7 @@ export default {
 			const message = formatString(
 				this.formatTags(this.content),
 				this.linkify && !this.linkOptions.disabled,
-				this.textFormatting
+				this.linkOptions
 			)
 
 			message.forEach(m => {

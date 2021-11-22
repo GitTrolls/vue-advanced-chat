@@ -208,46 +208,45 @@ fetchMessages({ room, options }) {
 
 ## Props API
 
-| <div style="width:230px">Prop</div> | Type             | Required | Default                                                                                                           |
-| ----------------------------------- | ---------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
-| `height`                            | String           | -        | `600px`                                                                                                           |
-| `current-user-id`(1)                | [String, Number] | `true`   | -                                                                                                                 |
-| `rooms`                             | Array            | -        | `[]`                                                                                                              |
-| `rooms-order`                       | String           | -        | `desc`                                                                                                            |
-| `loading-rooms`(2)                  | Boolean          | -        | `false`                                                                                                           |
-| `rooms-loaded`(3)                   | Boolean          | -        | `false`                                                                                                           |
-| `room-id`(4)                        | [String, Number] | -        | `null`                                                                                                            |
-| `load-first-room`(5)                | Boolean          | -        | `true`                                                                                                            |
-| `rooms-list-opened`                 | Boolean          | -        | `true`                                                                                                            |
-| `messages`                          | Array            | -        | `[]`                                                                                                              |
-| `room-message`(6)                   | String           | -        | `null`                                                                                                            |
-| `messages-loaded`(7)                | Boolean          | -        | `false`                                                                                                           |
-| `room-actions`(8)                   | Array            | -        | `[]`                                                                                                              |
-| `menu-actions`(9)                   | Array            | -        | `[]`                                                                                                              |
-| `message-actions`(10)               | Array            | -        | (10)                                                                                                              |
-| `templates-text`(11)                | Array            | -        | `null`                                                                                                            |
-| `show-search`                       | Boolean          | -        | `true`                                                                                                            |
-| `show-add-room`                     | Boolean          | -        | `true`                                                                                                            |
-| `show-send-icon`                    | Boolean          | -        | `true`                                                                                                            |
-| `show-files`                        | Boolean          | -        | `true`                                                                                                            |
-| `show-audio`                        | Boolean          | -        | `true`                                                                                                            |
-| `audio-bit-rate`                    | Number           | -        | `128`                                                                                                             |
-| `audio-sample-rate`                 | Number           | -        | `44100`                                                                                                           |
-| `show-emojis`                       | Boolean          | -        | `true`                                                                                                            |
-| `show-reaction-emojis`              | Boolean          | -        | `true`                                                                                                            |
-| `show-new-messages-divider`(12)     | Boolean          | -        | `true`                                                                                                            |
-| `show-footer`(13)                   | Boolean          | -        | `true`                                                                                                            |
-| `text-messages`(14)                 | Object           | -        | `null`                                                                                                            |
-| `text-formatting`(15)               | Object           | -        | ` {disabled: false, italic: '_', bold: '*', strike: '~', underline: '°', multilineCode: '```', inlineCode: ' `'}` |
-| `link-options`(16)                  | Object           | -        | `{ disabled: false, target: '_blank', rel: null }`                                                                |
-| `room-info-enabled` (17)            | Boolean          | -        | `false`                                                                                                           |
-| `textarea-action-enabled`(18)       | Boolean          | -        | `false`                                                                                                           |
-| `responsive-breakpoint`(19)         | Number           | -        | `900`                                                                                                             |
-| `single-room`(20)                   | Boolean          | -        | `false`                                                                                                           |
-| `scroll-distance`(21)               | Number           | -        | `60`                                                                                                              |
-| `theme`(22)                         | Sring            | -        | `light`                                                                                                           |
-| `accepted-files`(23)                | String           | -        | `*`                                                                                                               |
-| `styles`(24)                        | Object           | -        | (23)                                                                                                              |
+| <div style="width:230px">Prop</div> | Type             | Required | Default                                            |
+| ----------------------------------- | ---------------- | -------- | -------------------------------------------------- |
+| `height`                            | String           | -        | `600px`                                            |
+| `current-user-id`(1)                | [String, Number] | `true`   | -                                                  |
+| `rooms`                             | Array            | -        | `[]`                                               |
+| `rooms-order`                       | String           | -        | `desc`                                             |
+| `loading-rooms`(2)                  | Boolean          | -        | `false`                                            |
+| `rooms-loaded`(3)                   | Boolean          | -        | `false`                                            |
+| `room-id`(4)                        | [String, Number] | -        | `null`                                             |
+| `load-first-room`(5)                | Boolean          | -        | `true`                                             |
+| `rooms-list-opened`                 | Boolean          | -        | `true`                                             |
+| `messages`                          | Array            | -        | `[]`                                               |
+| `room-message`(6)                   | String           | -        | `null`                                             |
+| `messages-loaded`(7)                | Boolean          | -        | `false`                                            |
+| `room-actions`(8)                   | Array            | -        | `[]`                                               |
+| `menu-actions`(9)                   | Array            | -        | `[]`                                               |
+| `message-actions`(10)               | Array            | -        | (10)                                               |
+| `templates-text`(11)                | Array            | -        | `null`                                             |
+| `show-search`                       | Boolean          | -        | `true`                                             |
+| `show-add-room`                     | Boolean          | -        | `true`                                             |
+| `show-send-icon`                    | Boolean          | -        | `true`                                             |
+| `show-files`                        | Boolean          | -        | `true`                                             |
+| `show-audio`                        | Boolean          | -        | `true`                                             |
+| `audio-bit-rate`                    | Number           | -        | `128`                                              |
+| `audio-sample-rate`                 | Number           | -        | `44100`                                            |
+| `show-emojis`                       | Boolean          | -        | `true`                                             |
+| `show-reaction-emojis`              | Boolean          | -        | `true`                                             |
+| `show-new-messages-divider`(12)     | Boolean          | -        | `true`                                             |
+| `show-footer`(13)                   | Boolean          | -        | `true`                                             |
+| `text-messages`(14)                 | Object           | -        | `null`                                             |
+| `text-formatting`(15)               | Boolean          | -        | `true`                                             |
+| `link-options`(16)                  | Object           | -        | `{ disabled: false, target: '_blank', rel: null }` |
+| `room-info-enabled` (17)            | Boolean          | -        | `false`                                            |
+| `textarea-action-enabled`(18)       | Boolean          | -        | `false`                                            |
+| `responsive-breakpoint`(19)         | Number           | -        | `900`                                              |
+| `single-room`(20)                   | Boolean          | -        | `false`                                            |
+| `theme`(21)                         | Sring            | -        | `light`                                            |
+| `accepted-files`(22)                | String           | -        | `*`                                                |
+| `styles`(23)                        | Object           | -        | (23)                                               |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -372,11 +371,7 @@ text-messages="{
 }"
 ```
 
-**(15)** `text-formatting` can be used to add text formatting. Bold, italic, strikethrough, underline, inline code and multiline code formatting are currently available and can be used in conjonction.
-
-- You can disable text formatting by passing the prop `:text-formatting="{disabled: true}"`.
-- You can change markdown characters, for example: `:text-formatting="{italic: '^'}"`
-- You can disable a specific markdown character, for example: `:text-formatting="{bold: null}"`
+**(15)** `text-formatting` can be used to add text formatting. Currently, bold, italic, strikethrough, underline, inline code and multiline code formatting are available and can be used in conjonction. You can disable text formatting by passing the prop as `:text-formatting="false"`.
 
 | Style             | Syntax          | Example                                | Output                                 |
 | ----------------- | --------------- | -------------------------------------- | -------------------------------------- |
@@ -419,15 +414,13 @@ You can then use the [textarea-action-handler](#events-api) event to call your o
 
 **(20)** `single-room` can be used if you never want to show the rooms list on the left. You still need to pass the `rooms` prop as an array with a single element.
 
-**(21)** `scroll-distance` can be used to change the number of pixels before `fetchMessages` event is triggered when scrolling up to load more messages, or `fetchMoreRooms` event is triggered when scrolling down to load more rooms.
+**(21)** `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
 
-**(22)** `theme` can be used to change the chat theme. Currently, only `light` and `dark` are available.
-
-**(23)** `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
+**(22)** `accepted-files` can be used to set specifics file types allowed in chat. By default, all file types are allowed: `"*"`.
 
 Example: set `"accepted-files="image/png, image/jpeg, application/pdf"` to allow `JPG` `PNG` and `PDF` files only
 
-**(24)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
+**(23)** `styles` can be used to customize your own theme. You can find the full list [here](src/themes/index.js)
 
 ```javascript
 styles="{
@@ -685,8 +678,8 @@ Example:
 ```
 
 | <div style="width:230px">Slot</div> | Action                                                      | Data                                | Overridden slots                                                                                                   |
-| ----------------------------------- | ----------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------ | --- | -------------- | ---------------------------------------------------------- | --- | --- |
-| `custom-action-icon`                | Add a custom icon inside the footer                         | -                                   | -                                                                                                                  |     | `rooms-header` | Add a template on top of rooms list (above the search bar) | -   | -   |
+| ----------------------------------- | ----------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `custom-action-icon`                | Add a custom icon inside the footer                         | -                                   | -                                                                                                                  |  | `rooms-header` | Add a template on top of rooms list (above the search bar) | - | - |
 | `room-list-item`                    | Replace the template of the room list items                 | `room`                              | `room-list-avatar`, `room-list-options`                                                                            |
 | `room-list-avatar`                  | Replace the avatar of room list items                       | `room`                              |                                                                                                                    |
 | `room-list-options`                 | Replace the template of the list room options               | `room`                              | `room-list-options-icon`                                                                                           |
@@ -849,6 +842,7 @@ yarn add --save vue
   [messagesLoaded]="messagesLoaded"
   [showFiles]="true"
   [showEmojis]="true"
+  [textFormatting]="true"
   [showReactionEmojis]="true"
   [showFooter]="true"
   (fetch-messages)="fetchMessages($event.detail[0])"

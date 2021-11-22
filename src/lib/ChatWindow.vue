@@ -16,7 +16,6 @@
 				:text-formatting="textFormatting"
 				:link-options="linkOptions"
 				:is-mobile="isMobile"
-				:scroll-distance="scrollDistance"
 				@fetch-room="fetchRoom"
 				@fetch-more-rooms="fetchMoreRooms"
 				@loading-more-rooms="loadingMoreRooms = $event"
@@ -56,10 +55,10 @@
 				:loading-rooms="loadingRooms"
 				:room-info-enabled="roomInfoEnabled"
 				:textarea-action-enabled="textareaActionEnabled"
-				:scroll-distance="scrollDistance"
 				:accepted-files="acceptedFiles"
 				:templates-text="templatesText"
-				@toggle-rooms-list="toggleRoomsList"
+        :media-modal-preview="mediaModalPreview"
+        @toggle-rooms-list="toggleRoomsList"
 				@room-info="roomInfo"
 				@fetch-messages="fetchMessages"
 				@send-message="sendMessage"
@@ -137,18 +136,7 @@ export default {
 		showReactionEmojis: { type: Boolean, default: true },
 		showNewMessagesDivider: { type: Boolean, default: true },
 		showFooter: { type: Boolean, default: true },
-		textFormatting: {
-			type: Object,
-			default: () => ({
-				disabled: false,
-				italic: '_',
-				bold: '*',
-				strike: '~',
-				underline: '°',
-				multilineCode: '```',
-				inlineCode: '`'
-			})
-		},
+		textFormatting: { type: Boolean, default: true },
 		linkOptions: {
 			type: Object,
 			default: () => ({ disabled: false, target: '_blank', rel: null })
@@ -156,10 +144,10 @@ export default {
 		roomInfoEnabled: { type: Boolean, default: false },
 		textareaActionEnabled: { type: Boolean, default: false },
 		roomMessage: { type: String, default: '' },
-		scrollDistance: { type: Number, default: 60 },
 		acceptedFiles: { type: String, default: '*' },
-		templatesText: { type: Array, default: null }
-	},
+		templatesText: { type: Array, default: null },
+    mediaModalPreview: { type: Boolean, default: true }
+  },
 
 	emits: [
 		'toggle-rooms-list',

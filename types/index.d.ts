@@ -1,4 +1,4 @@
-import Vue, { VNode, PluginFunction } from 'vue'
+import Vue, { VNode, Component, PluginFunction } from 'vue'
 
 export type StringNumber = string | number
 
@@ -82,16 +82,6 @@ export interface CustomAction {
 
 export type CustomActions = CustomAction[]
 
-export interface TextFormatting {
-	disabled?: boolean
-	italic?: string
-	bold?: string
-	strike?: string
-	underline?: string
-	multilineCode?: string
-	inlineCode?: string
-}
-
 export interface Slots {
 	'rooms-header': VNode[]
 	'room-list-item': VNode[]
@@ -157,7 +147,7 @@ export interface Props {
 	'show-new-messages-divider'?: boolean
 	'show-footer'?: boolean
 	'text-messages'?: Record<string, StringNumber>
-	'text-formatting'?: TextFormatting
+	'text-formatting'?: number
 	'responsive-breakpoint'?: boolean
 	'single-room'?: boolean
 	'accepted-files'?: string
