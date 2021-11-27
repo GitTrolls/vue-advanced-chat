@@ -56,8 +56,6 @@
 				:loading-rooms="loadingRooms"
 				:room-info-enabled="roomInfoEnabled"
 				:textarea-action-enabled="textareaActionEnabled"
-				:user-tags-enabled="userTagsEnabled"
-				:emojis-suggestion-enabled="emojisSuggestionEnabled"
 				:scroll-distance="scrollDistance"
 				:accepted-files="acceptedFiles"
 				:templates-text="templatesText"
@@ -69,7 +67,6 @@
 				@delete-message="deleteMessage"
 				@open-file="openFile"
 				@open-user-tag="openUserTag"
-				@open-failed-message="openFailedMessage"
 				@menu-action-handler="menuActionHandler"
 				@message-action-handler="messageActionHandler"
 				@send-message-reaction="sendMessageReaction"
@@ -81,12 +78,18 @@
 				</template>
 			</room>
 		</div>
+		<media-preview
+			v-if="showMediaModal"
+			:file="filePreview"
+			@close-file-modal="showMediaModal = false"
+		/>
 	</div>
 </template>
 
 <script>
 import RoomsList from './RoomsList/RoomsList'
 import Room from './Room/Room'
+import MediaPreview from './MediaPreview/MediaPreview'
 
 import locales from '../locales'
 import { defaultThemeStyles, cssThemeVars } from '../themes'
@@ -99,7 +102,8 @@ export default {
 	name: 'ChatContainer',
 	components: {
 		RoomsList,
-		Room
+		Room,
+		MediaPreview
 	},
 
 	props: {
@@ -158,12 +162,11 @@ export default {
 		},
 		roomInfoEnabled: { type: Boolean, default: false },
 		textareaActionEnabled: { type: Boolean, default: false },
-		userTagsEnabled: { type: Boolean, default: true },
-		emojisSuggestionEnabled: { type: Boolean, default: true },
 		roomMessage: { type: String, default: '' },
 		scrollDistance: { type: Number, default: 60 },
 		acceptedFiles: { type: String, default: '*' },
-		templatesText: { type: Array, default: null }
+		templatesText: { type: Array, default: null },
+		mediaModalPreview: { type: Boolean, default: true }
 	},
 
 	emits: [
@@ -175,7 +178,6 @@ export default {
 		'delete-message',
 		'open-file',
 		'open-user-tag',
-		'open-failed-message',
 		'menu-action-handler',
 		'message-action-handler',
 		'send-message-reaction',
@@ -191,7 +193,11 @@ export default {
 			room: {},
 			loadingMoreRooms: false,
 			showRoomsList: true,
-			isMobile: false
+			isMobile: false,
+			showMediaModal: false,
+			filePreview: {
+				url: ''
+			}
 		}
 	},
 
@@ -333,16 +339,15 @@ export default {
 			this.$emit('delete-message', { message, roomId: this.room.roomId })
 		},
 		openFile({ message, file }) {
-			this.$emit('open-file', { message, file })
+			if (this.mediaModalPreview && file.action === 'preview') {
+				this.filePreview = file.file
+				this.showMediaModal = true
+			} else {
+				this.$emit('open-file', { message, file })
+			}
 		},
 		openUserTag({ user }) {
 			this.$emit('open-user-tag', { user })
-		},
-		openFailedMessage({ message }) {
-			this.$emit('open-failed-message', {
-				message,
-				roomId: this.room.roomId
-			})
 		},
 		menuActionHandler(ev) {
 			this.$emit('menu-action-handler', {

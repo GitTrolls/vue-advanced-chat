@@ -20,8 +20,7 @@ beforeEach(() => {
 			roomsLoaded: mockData.roomsLoaded,
 			room: mockData.rooms[0],
 			roomActions: mockData.roomActions,
-			linkOptions: mockData.linkOptions,
-			scrollDistance: 60
+			linkOptions: mockData.linkOptions
 		}
 	})
 })
