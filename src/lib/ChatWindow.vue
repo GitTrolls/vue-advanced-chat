@@ -59,8 +59,7 @@
 				:scroll-distance="scrollDistance"
 				:accepted-files="acceptedFiles"
 				:templates-text="templatesText"
-        :media-modal-preview="mediaModalPreview"
-        @toggle-rooms-list="toggleRoomsList"
+				@toggle-rooms-list="toggleRoomsList"
 				@room-info="roomInfo"
 				@fetch-messages="fetchMessages"
 				@send-message="sendMessage"
@@ -159,9 +158,8 @@ export default {
 		roomMessage: { type: String, default: '' },
 		scrollDistance: { type: Number, default: 60 },
 		acceptedFiles: { type: String, default: '*' },
-		templatesText: { type: Array, default: null },
-    mediaModalPreview: { type: Boolean, default: true }
-  },
+		templatesText: { type: Array, default: null }
+	},
 
 	emits: [
 		'toggle-rooms-list',
