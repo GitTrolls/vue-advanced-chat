@@ -56,6 +56,8 @@
 				:loading-rooms="loadingRooms"
 				:room-info-enabled="roomInfoEnabled"
 				:textarea-action-enabled="textareaActionEnabled"
+				:user-tags-enabled="userTagsEnabled"
+				:emojis-suggestion-enabled="emojisSuggestionEnabled"
 				:scroll-distance="scrollDistance"
 				:accepted-files="acceptedFiles"
 				:templates-text="templatesText"
@@ -67,6 +69,7 @@
 				@delete-message="deleteMessage"
 				@open-file="openFile"
 				@open-user-tag="openUserTag"
+				@open-failed-message="openFailedMessage"
 				@menu-action-handler="menuActionHandler"
 				@message-action-handler="messageActionHandler"
 				@send-message-reaction="sendMessageReaction"
@@ -164,6 +167,8 @@ export default {
 		},
 		roomInfoEnabled: { type: Boolean, default: false },
 		textareaActionEnabled: { type: Boolean, default: false },
+		userTagsEnabled: { type: Boolean, default: true },
+		emojisSuggestionEnabled: { type: Boolean, default: true },
 		roomMessage: { type: String, default: '' },
 		scrollDistance: { type: Number, default: 60 },
 		acceptedFiles: { type: String, default: '*' },
@@ -180,6 +185,7 @@ export default {
 		'delete-message',
 		'open-file',
 		'open-user-tag',
+		'open-failed-message',
 		'menu-action-handler',
 		'message-action-handler',
 		'send-message-reaction',
@@ -348,6 +354,12 @@ export default {
 		},
 		openUserTag({ user }) {
 			this.$emit('open-user-tag', { user })
+		},
+		openFailedMessage({ message }) {
+			this.$emit('open-failed-message', {
+				message,
+				roomId: this.room.roomId
+			})
 		},
 		menuActionHandler(ev) {
 			this.$emit('menu-action-handler', {

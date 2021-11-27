@@ -174,6 +174,21 @@
 						@send-message-reaction="sendMessageReaction"
 					/>
 				</div>
+				<slot name="message-failure" v-bind="{ message }">
+					<div
+						v-if="message.failure && message.senderId === currentUserId"
+						class="vac-failure-container vac-svg-button"
+						:class="{
+							'vac-failure-container-avatar':
+								message.avatar && message.senderId === currentUserId
+						}"
+						@click="$emit('open-failed-message', { message })"
+					>
+						<div class="vac-failure-text">
+							!
+						</div>
+					</div>
+				</slot>
 				<div
 					v-if="message.avatar && message.senderId === currentUserId"
 					class="vac-avatar vac-avatar-current"
@@ -232,6 +247,7 @@ export default {
 		'message-added',
 		'open-file',
 		'open-user-tag',
+		'open-failed-message',
 		'message-action-handler',
 		'send-message-reaction'
 	],

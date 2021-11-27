@@ -86,6 +86,7 @@
 								@message-action-handler="messageActionHandler"
 								@open-file="openFile"
 								@open-user-tag="openUserTag"
+								@open-failed-message="$emit('open-failed-message', $event)"
 								@send-message-reaction="sendMessageReaction"
 								@hide-options="hideOptions = $event"
 							>
@@ -379,6 +380,8 @@ export default {
 		loadingRooms: { type: Boolean, required: true },
 		roomInfoEnabled: { type: Boolean, required: true },
 		textareaActionEnabled: { type: Boolean, required: true },
+		userTagsEnabled: { type: Boolean, required: true },
+		emojisSuggestionEnabled: { type: Boolean, required: true },
 		scrollDistance: { type: Number, required: true },
 		templatesText: { type: Array, default: null }
 	},
@@ -396,6 +399,7 @@ export default {
 		'typing-message',
 		'open-file',
 		'open-user-tag',
+		'open-failed-message',
 		'textarea-action-handler'
 	],
 
@@ -613,10 +617,12 @@ export default {
 
 			const observer = new ResizeObserver(_ => {
 				if (container.scrollHeight !== prevScrollHeight) {
-					this.$refs.scrollContainer.scrollTo({
-						top: container.scrollHeight - prevScrollHeight
-					})
-					observer.disconnect()
+					if (this.$refs.scrollContainer) {
+						this.$refs.scrollContainer.scrollTo({
+							top: container.scrollHeight - prevScrollHeight
+						})
+						observer.disconnect()
+					}
 				}
 			})
 
@@ -718,10 +724,11 @@ export default {
 		updateFooterList(tagChar) {
 			if (!this.getTextareaRef()) return
 
-			if (
-				tagChar === '@' &&
-				(!this.room.users || this.room.users.length <= 2)
-			) {
+			if (tagChar === ':' && !this.emojisSuggestionEnabled) {
+				return
+			}
+
+			if (tagChar === '@' && (!this.userTagsEnabled || !this.room.users)) {
 				return
 			}
 

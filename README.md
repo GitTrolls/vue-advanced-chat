@@ -242,6 +242,9 @@ fetchMessages({ room, options }) {
 | `link-options`(16)                  | Object           | -        | `{ disabled: false, target: '_blank', rel: null }`                                                                |
 | `room-info-enabled` (17)            | Boolean          | -        | `false`                                                                                                           |
 | `textarea-action-enabled`(18)       | Boolean          | -        | `false`                                                                                                           |
+| `user-tags-enabled`                 | Boolean          | -        | `true`                                                                                                            |
+| `emojis-suggestion-enabled`         | Boolean          | -        | `true`                                                                                                            |
+| `media-preview-enabled`             | Boolean          | -        | `true`                                                                                                            |
 | `responsive-breakpoint`(19)         | Number           | -        | `900`                                                                                                             |
 | `single-room`(20)                   | Boolean          | -        | `false`                                                                                                           |
 | `scroll-distance`(21)               | Number           | -        | `60`                                                                                                              |
@@ -523,6 +526,7 @@ Message states:
 - `distributed: true` two checkmarks
 - `seen: true` two blue checkmarks
 - `deleted: true` grey background with deleted message text
+- `failure: true` red clickable failure icon
 
 ```javascript
 messages="[
@@ -540,6 +544,7 @@ messages="[
     distributed: true,
     seen: true,
     deleted: false,
+    failure: true,
     disableActions: false,
     disableReactions: false,
     files: [
@@ -595,6 +600,7 @@ messages="[
 | `delete-message`                     | `{ roomId, message }`                                                     | Deleted a message                               |
 | `open-file`                          | `{ message, file }`                                                       | Clicked to view or download a file              |
 | `open-user-tag`(3)                   | `{ user }`                                                                | Clicked on a user tag inside a message          |
+| `open-failed-message`                | `{ roomId, message }`                                                     | Clicked on the failure icon next to a message   |
 | `add-room`                           | -                                                                         | Clicked on the plus icon next to searchbar      |
 | `room-action-handler`(4)             | `{ roomId, action }`                                                      | Clicked on the vertical dots icon inside a room |
 | `menu-action-handler`(5)             | `{ roomId, action }`                                                      | Clicked on the vertical dots icon inside a room |
@@ -603,7 +609,7 @@ messages="[
 | `room-info` (7)                      | `room`                                                                    | Clicked the room header bar                     |
 | `toggle-rooms-list`                  | `{ opened }`                                                              | Clicked on the toggle icon inside a room header |
 | `textarea-action-handler`(8)         | `{ roomId, message }`                                                     | Clicked on custom icon inside the footer        |
-| `typing-message`                     | `{ message, roomId }`                                                     | Started typing a message                        |
+| `typing-message`                     | `{ roomId, message }`                                                     | Started typing a message                        |
 
 **(1)** `fetch-messages` is triggered every time a room is opened. If the room is opened for the first time, the `options` param will hold `reset: true`.<br>
 **(1)** `fetch-messages` should be a method implementing a pagination system. Its purpose is to load older messages of a conversation when the user scroll on top.
@@ -685,7 +691,7 @@ Example:
 ```
 
 | <div style="width:230px">Slot</div> | Action                                                      | Data                                | Overridden slots                                                                                                   |
-| ----------------------------------- | ----------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------ | --- | -------------- | ---------------------------------------------------------- | --- | --- |
+| - | - | - | - |
 | `custom-action-icon`                | Add a custom icon inside the footer                         | -                                   | -                                                                                                                  |     | `rooms-header` | Add a template on top of rooms list (above the search bar) | -   | -   |
 | `room-list-item`                    | Replace the template of the room list items                 | `room`                              | `room-list-avatar`, `room-list-options`                                                                            |
 | `room-list-avatar`                  | Replace the avatar of room list items                       | `room`                              |                                                                                                                    |
@@ -697,6 +703,7 @@ Example:
 | `room-header-info`                  | Replace the template of the room header text                | `room`, `typingUsers`, `userStatus` |
 | `room-options`                      | Replace the template of the room options                    | -                                   | menu-icon                                                                                                          |
 | `message`                           | Replace the template of the message box                     | `message`                           | `deleted-icon`, `eye-icon`, `document-icon`, `pencil-icon`, `checkmark-icon`, `dropdown-icon`, `emoji-picker-icon` |
+| `message-failure`                   | Replace the message failure icon                            | -                                   | -                                                                                                                  |
 | `messages-empty`                    | Replace the empty message template                          | -                                   | -                                                                                                                  |
 | `rooms-empty`                       | Replace the empty rooms template                            | -                                   | -                                                                                                                  |
 | `no-room-selected`                  | Replace the no room selected template                       | -                                   | -                                                                                                                  |
@@ -709,6 +716,7 @@ Example:
 | `file-icon`                         | Replace the file icon                                       | -                                   | -                                                                                                                  |
 | `file-close-icon`                   | Replace the file close icon                                 | -                                   | -                                                                                                                  |
 | `edit-close-icon`                   | Replace the edit close icon                                 | -                                   | -                                                                                                                  |
+| `preview-close-icon`                | Replace the media preview close icon                        | -                                   | -                                                                                                                  |
 | `emoji-picker-icon`                 | Replace the emoji picker icon                               | -                                   | -                                                                                                                  |
 | `emoji-picker-reaction-icon`        | Replace the emoji picker reaction icon (in the message box) | -                                   | -                                                                                                                  |
 | `paperclip-icon`                    | Replace the paperclip icon                                  | -                                   | -                                                                                                                  |
