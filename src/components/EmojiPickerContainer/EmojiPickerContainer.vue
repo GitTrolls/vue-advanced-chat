@@ -62,7 +62,8 @@ export default {
 				setTimeout(() => {
 					this.addCustomStyling()
 
-					this.$refs.emojiPicker.shadowRoot
+					document
+						.querySelector('emoji-picker')
 						.addEventListener('emoji-click', ({ detail }) => {
 							this.$emit('add-emoji', {
 								unicode: detail.unicode
