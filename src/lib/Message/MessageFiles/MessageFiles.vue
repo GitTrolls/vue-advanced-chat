@@ -6,9 +6,10 @@
 				:current-user-id="currentUserId"
 				:message="message"
 				:index="idx"
+				:message-selection-enabled="messageSelectionEnabled"
 				@open-file="$emit('open-file', $event)"
 			>
-				<template v-for="(i, name) in $slots" #[name]="data">
+				<template v-for="(i, name) in $scopedSlots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
 			</message-file>
@@ -46,7 +47,7 @@
 			:link-options="linkOptions"
 			@open-user-tag="$emit('open-user-tag')"
 		>
-			<template v-for="(i, name) in $slots" #[name]="data">
+			<template v-for="(i, name) in $scopedSlots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
 		</format-message>
@@ -71,7 +72,8 @@ export default {
 		message: { type: Object, required: true },
 		roomUsers: { type: Array, required: true },
 		textFormatting: { type: Object, required: true },
-		linkOptions: { type: Object, required: true }
+		linkOptions: { type: Object, required: true },
+		messageSelectionEnabled: { type: Boolean, required: true }
 	},
 
 	emits: ['open-file', 'open-user-tag'],

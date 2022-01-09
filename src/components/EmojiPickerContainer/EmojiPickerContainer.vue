@@ -22,7 +22,7 @@
 						display: emojiPickerTop || !emojiReaction ? 'initial' : 'none'
 					}"
 				>
-					<emoji-picker v-pre ref="emojiPicker" v-if="emojiOpened" />
+					<emoji-picker v-if="emojiOpened" ref="emojiPicker" />
 				</div>
 			</transition>
 		</template>
