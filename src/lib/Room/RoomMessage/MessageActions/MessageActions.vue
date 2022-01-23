@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import vClickOutside from '../../../../utils/on-click-outside'
+import vClickOutside from 'v-click-outside'
 
 import SvgIcon from '../../../../components/SvgIcon/SvgIcon'
 import EmojiPickerContainer from '../../../../components/EmojiPickerContainer/EmojiPickerContainer'
@@ -90,7 +90,7 @@ export default {
 	components: { SvgIcon, EmojiPickerContainer },
 
 	directives: {
-		clickOutside: vClickOutside
+		clickOutside: vClickOutside.directive
 	},
 
 	props: {
