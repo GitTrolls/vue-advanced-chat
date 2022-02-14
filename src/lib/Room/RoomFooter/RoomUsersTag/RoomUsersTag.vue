@@ -53,10 +53,8 @@ export default {
 	},
 
 	watch: {
-		filteredUsersTag(val, oldVal) {
-			if (!oldVal.length || val.length !== oldVal.length) {
-				this.activeItem = 0
-			}
+		filteredUsersTag() {
+			this.activeItem = 0
 		},
 		selectItem(val) {
 			if (val) {

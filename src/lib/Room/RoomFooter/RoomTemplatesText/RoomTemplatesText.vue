@@ -51,10 +51,8 @@ export default {
 	},
 
 	watch: {
-		filteredTemplatesText(val, oldVal) {
-			if (!oldVal.length || val.length !== oldVal.length) {
-				this.activeItem = 0
-			}
+		filteredTemplatesText() {
+			this.activeItem = 0
 		},
 		selectItem(val) {
 			if (val) {
