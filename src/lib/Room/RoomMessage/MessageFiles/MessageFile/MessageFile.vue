@@ -18,7 +18,7 @@
 				:show="isImageLoading"
 				:style="{ top: `${imageResponsive.loaderTop}px` }"
 			>
-				<template v-for="(idx, name) in $slots" #[name]="data">
+				<template v-for="(idx, name) in $scopedSlots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
 			</loader>
