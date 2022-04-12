@@ -115,10 +115,11 @@
 </template>
 
 <script>
+import vClickOutside from 'v-click-outside'
+
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
 import FormatMessage from '../../../components/FormatMessage/FormatMessage'
 
-import vClickOutside from '../../../utils/on-click-outside'
 import typingText from '../../../utils/typing-text'
 const { isAudioFile } = require('../../../utils/media-file')
 
@@ -130,7 +131,7 @@ export default {
 	},
 
 	directives: {
-		clickOutside: vClickOutside
+		clickOutside: vClickOutside.directive
 	},
 
 	props: {
@@ -199,6 +200,7 @@ export default {
 		},
 		formattedDuration() {
 			const file = this.room.lastMessage?.files?.[0]
+
 			if (file) {
 				if (!file.duration) {
 					return `${file.name}.${file.extension}`
@@ -207,6 +209,7 @@ export default {
 				let s = Math.floor(file.duration)
 				return (s - (s %= 60)) / 60 + (s > 9 ? ':' : ':0') + s
 			}
+
 			return ''
 		},
 		isAudio() {
