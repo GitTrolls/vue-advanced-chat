@@ -212,12 +212,12 @@ fetchMessages({ room, options }) {
 | <div style="width:230px">Prop</div> | Type             | Required | Default                                                                                                           |
 | ----------------------------------- | ---------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
 | `height`                            | String           | -        | `600px`                                                                                                           |
-| `current-user-id`(1)                | String           | `true`   | -                                                                                                                 |
+| `current-user-id`(1)                | [String, Number] | `true`   | -                                                                                                                 |
 | `rooms`                             | Array            | -        | `[]`                                                                                                              |
-| `rooms-order`                       | `desc` / `asc`   | -        | `desc`                                                                                                            |
+| `rooms-order`                       | String           | -        | `desc`                                                                                                            |
 | `loading-rooms`(2)                  | Boolean          | -        | `false`                                                                                                           |
 | `rooms-loaded`(3)                   | Boolean          | -        | `false`                                                                                                           |
-| `room-id`(4)                        | String           | -        | `null`                                                                                                            |
+| `room-id`(4)                        | [String, Number] | -        | `null`                                                                                                            |
 | `load-first-room`(5)                | Boolean          | -        | `true`                                                                                                            |
 | `rooms-list-opened`                 | Boolean          | -        | `true`                                                                                                            |
 | `messages`                          | Array            | -        | `[]`                                                                                                              |
@@ -253,7 +253,7 @@ fetchMessages({ room, options }) {
 | `responsive-breakpoint`(22)         | Number           | -        | `900`                                                                                                             |
 | `single-room`(23)                   | Boolean          | -        | `false`                                                                                                           |
 | `scroll-distance`(24)               | Number           | -        | `60`                                                                                                              |
-| `theme`(25)                         | `light` / `dark` | -        | `light`                                                                                                           |
+| `theme`(25)                         | Sring            | -        | `light`                                                                                                           |
 | `accepted-files`(26)                | String           | -        | `*`                                                                                                               |
 | `styles`(27)                        | Object           | -        | (25)                                                                                                              |
 
@@ -502,7 +502,7 @@ Your props must follow a specific structure to display rooms and messages correc
 ```javascript
 rooms="[
   {
-    roomId: '1',
+    roomId: 1,
     roomName: 'Room 1',
     avatar: 'assets/imgs/people.png',
     unreadCount: 4,
@@ -743,66 +743,56 @@ messageActionHandler({ roomId, action, message }) {
 Example:
 
 ```javascript
-<vue-advanced-chat>
-  <div slot="room-header">
-    This is a new room header
-  </div>
-
-  <div v-for="message in messages" :slot="'message_' + message._id">
-    <div v-if="message.system">
-      System message: {{ message.content }}
-    </div>
-    <div v-else>
-      Normal message: {{ message.content }}
-    </div>
-  </div>
-</vue-advanced-chat>
+<template #room-header="{ room, userStatus }">
+  {{ room.roomName }} - {{ userStatus }}
+</template>
 ```
 
 | <div style="width:230px">Slot</div> | Action                                                      | Data                                | Overridden slots                                                                                                   |
 | - | - | - | - |
-| `custom-action-icon`                | Add a custom icon inside the footer                          | -                                          | -                                                                                                                  |     | `rooms-header` | Add a template on top of rooms list (above the search bar) | -   | -   |
-| `room-list-item`                    | Replace the template of the room list items                  | `room`                                     | `room-list-avatar`, `room-list-options`                                                                            |
-| `room-list-avatar`                  | Replace the avatar of room list items                        | `room`                                     |                                                                                                                    |
-| `room-list-options`                 | Replace the template of the list room options                | `room`                                     | `room-list-options-icon`                                                                                           |
-| `rooms-header`                      | Replace the content above the search bar                     | -                                          | -                                                                                                                  |
-| `rooms-list-search`                 | Replace the search bar                                       | -                                          | -                                                                                                                  |
-| `room-header`                       | Replace the template of the room header                      | -                                          | `room-options`, `menu-icon`, `toggle-icon`                                                                         |
-| `room-header-avatar`                | Replace the template of the room header avatar               | -                                          |
-| `room-header-info`                  | Replace the template of the room header text                 | -                                          |
-| `room-options`                      | Replace the template of the room options                     | -                                          | menu-icon                                                                                                          |
-| `message_{{MESSAGE_ID}}`            | Replace the template of the message (and system message) box | -                                          | `deleted-icon`, `eye-icon`, `document-icon`, `pencil-icon`, `checkmark-icon`, `dropdown-icon`, `emoji-picker-icon` |
-| `message-failure`                   | Replace the message failure icon                             | -                                          | -                                                                                                                  |
-| `messages-empty`                    | Replace the empty message template                           | -                                          | -                                                                                                                  |
-| `rooms-empty`                       | Replace the empty rooms template                             | -                                          | -                                                                                                                  |
-| `no-room-selected`                  | Replace the no room selected template                        | -                                          | -                                                                                                                  |
-| `menu-icon`                         | Replace the room menu icon                                   | -                                          | -                                                                                                                  |
-| `toggle-icon`                       | Replace the toggle room list icon                            | -                                          | -                                                                                                                  |
-| `spinner-icon`                      | Replace the loading spinner icon                             | -                                          | -                                                                                                                  |
-| `scroll-icon`                       | Replace the scroll to newest message icon                    | -                                          | -                                                                                                                  |
-| `reply-close-icon`                  | Replace the reply close icon                                 | -                                          | -                                                                                                                  |
-| `image-close-icon`                  | Replace the image close icon                                 | -                                          | -                                                                                                                  |
-| `file-icon`                         | Replace the file icon                                        | -                                          | -                                                                                                                  |
-| `file-close-icon`                   | Replace the file close icon                                  | -                                          | -                                                                                                                  |
-| `edit-close-icon`                   | Replace the edit close icon                                  | -                                          | -                                                                                                                  |
-| `preview-close-icon`                | Replace the media preview close icon                         | -                                          | -                                                                                                                  |
-| `emoji-picker-icon`                 | Replace the emoji picker icon                                | -                                          | -                                                                                                                  |
-| `emoji-picker-reaction-icon`        | Replace the emoji picker reaction icon (in the message box)  | -                                          | -                                                                                                                  |
-| `paperclip-icon`                    | Replace the paperclip icon                                   | -                                          | -                                                                                                                  |
-| `send-icon`                         | Replace the message send icon                                | -                                          | -                                                                                                                  |
-| `eye-icon`                          | Replace the eye icon (image message)                         | -                                          | -                                                                                                                  |
-| `document-icon`                     | Replace the document icon                                    | -                                          | -                                                                                                                  |
-| `pencil-icon`                       | Replace the pencil icon                                      | -                                          | -                                                                                                                  |
-| `checkmark-icon`                    | Replace the checkmark icon                                   | `message`                                  | -                                                                                                                  |
-| `deleted-icon`                      | Replace the deleted icon                                     |                                            | -                                                                                                                  |
-| `microphone-icon`                   | Replace the microphone icon                                  |                                            | -                                                                                                                  |
-| `dropdown-icon`                     | Replace the dropdown icon                                    | -                                          | -                                                                                                                  |
-| `room-list-options-icon`            | Replace the room list options dropdown icon                  | -                                          | -                                                                                                                  |
-| `search-icon`                       | Replace the search icon                                      | -                                          | -                                                                                                                  |
-| `add-icon`                          | Replace the add room icon                                    | -                                          | -                                                                                                                  |
-| `audio-pause-icon`                  | Replace the message audio pause icon                         | -                                          | -                                                                                                                  |
-| `audio-play-icon`                   | Replace the message audio play icon                          | -                                          | -                                                                                                                  |
-| `emoji-picker`                      | Replace the emoji picker component                           | `emojiOpened`, `addEmoji({ unicode: 😁 })` | `emoji-picker-reaction-icon`                                                                                       |
+| `custom-action-icon`                | Add a custom icon inside the footer                         | -                                          | -                                                                                                                  |     | `rooms-header` | Add a template on top of rooms list (above the search bar) | -   | -   |
+| `room-list-item`                    | Replace the template of the room list items                 | `room`                                     | `room-list-avatar`, `room-list-options`                                                                            |
+| `room-list-avatar`                  | Replace the avatar of room list items                       | `room`                                     |                                                                                                                    |
+| `room-list-options`                 | Replace the template of the list room options               | `room`                                     | `room-list-options-icon`                                                                                           |
+| `rooms-header`                      | Replace the content above the search bar                    | -                                          | -                                                                                                                  |
+| `rooms-list-search`                 | Replace the search bar                                      | -                                          | -                                                                                                                  |
+| `room-header`                       | Replace the template of the room header                     | `room`, `typingUsers`, `userStatus`        | `room-options`, `menu-icon`, `toggle-icon`                                                                         |
+| `room-header-avatar`                | Replace the template of the room header avatar              | `room`                                     |
+| `room-header-info`                  | Replace the template of the room header text                | `room`, `typingUsers`, `userStatus`        |
+| `room-options`                      | Replace the template of the room options                    | -                                          | menu-icon                                                                                                          |
+| `message`                           | Replace the template of the message box                     | `message`                                  | `deleted-icon`, `eye-icon`, `document-icon`, `pencil-icon`, `checkmark-icon`, `dropdown-icon`, `emoji-picker-icon` |
+| `system-message`                    | Replace the template of the system message box              | `message`                                  | -                                                                                                                  |
+| `message-failure`                   | Replace the message failure icon                            | -                                          | -                                                                                                                  |
+| `messages-empty`                    | Replace the empty message template                          | -                                          | -                                                                                                                  |
+| `rooms-empty`                       | Replace the empty rooms template                            | -                                          | -                                                                                                                  |
+| `no-room-selected`                  | Replace the no room selected template                       | -                                          | -                                                                                                                  |
+| `menu-icon`                         | Replace the room menu icon                                  | -                                          | -                                                                                                                  |
+| `toggle-icon`                       | Replace the toggle room list icon                           | -                                          | -                                                                                                                  |
+| `spinner-icon`                      | Replace the loading spinner icon                            | `show, infinite`                           | -                                                                                                                  |
+| `scroll-icon`                       | Replace the scroll to newest message icon                   | -                                          | -                                                                                                                  |
+| `reply-close-icon`                  | Replace the reply close icon                                | -                                          | -                                                                                                                  |
+| `image-close-icon`                  | Replace the image close icon                                | -                                          | -                                                                                                                  |
+| `file-icon`                         | Replace the file icon                                       | -                                          | -                                                                                                                  |
+| `file-close-icon`                   | Replace the file close icon                                 | -                                          | -                                                                                                                  |
+| `edit-close-icon`                   | Replace the edit close icon                                 | -                                          | -                                                                                                                  |
+| `preview-close-icon`                | Replace the media preview close icon                        | -                                          | -                                                                                                                  |
+| `emoji-picker-icon`                 | Replace the emoji picker icon                               | -                                          | -                                                                                                                  |
+| `emoji-picker-reaction-icon`        | Replace the emoji picker reaction icon (in the message box) | -                                          | -                                                                                                                  |
+| `paperclip-icon`                    | Replace the paperclip icon                                  | -                                          | -                                                                                                                  |
+| `send-icon`                         | Replace the message send icon                               | -                                          | -                                                                                                                  |
+| `eye-icon`                          | Replace the eye icon (image message)                        | -                                          | -                                                                                                                  |
+| `document-icon`                     | Replace the document icon                                   | -                                          | -                                                                                                                  |
+| `pencil-icon`                       | Replace the pencil icon                                     | -                                          | -                                                                                                                  |
+| `checkmark-icon`                    | Replace the checkmark icon                                  | `message`                                  | -                                                                                                                  |
+| `deleted-icon`                      | Replace the deleted icon                                    | `deleted`                                  | -                                                                                                                  |
+| `microphone-icon`                   | Replace the microphone icon                                 |                                            | -                                                                                                                  |
+| `dropdown-icon`                     | Replace the dropdown icon                                   | -                                          | -                                                                                                                  |
+| `room-list-options-icon`            | Replace the room list options dropdown icon                 | -                                          | -                                                                                                                  |
+| `search-icon`                       | Replace the search icon                                     | -                                          | -                                                                                                                  |
+| `add-icon`                          | Replace the add room icon                                   | -                                          | -                                                                                                                  |
+| `audio-pause-icon`                  | Replace the message audio pause icon                        | -                                          | -                                                                                                                  |
+| `audio-play-icon`                   | Replace the message audio play icon                         | -                                          | -                                                                                                                  |
+| `emoji-picker`                      | Replace the emoji picker component                          | `emojiOpened`, `addEmoji({ unicode: 😁 })` | `emoji-picker-reaction-icon`                                                                                       |
 
 <br>
 

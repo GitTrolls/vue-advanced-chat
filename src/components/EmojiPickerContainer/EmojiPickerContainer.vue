@@ -22,7 +22,7 @@
 						display: emojiPickerTop || !emojiReaction ? 'initial' : 'none'
 					}"
 				>
-					<emoji-picker v-pre ref="emojiPicker" v-if="emojiOpened" />
+					<emoji-picker v-if="emojiOpened" ref="emojiPicker" />
 				</div>
 			</transition>
 		</template>
@@ -114,9 +114,7 @@ export default {
 		},
 		setEmojiPickerPosition(clientY, innerWidth, innerHeight) {
 			const mobileSize = innerWidth < 500 || innerHeight < 700
-			const roomFooterRef = document
-				.querySelector('vue-advanced-chat')
-				.shadowRoot.getElementById('room-footer')
+			const roomFooterRef = document.getElementById('room-footer')
 
 			if (!roomFooterRef) {
 				if (mobileSize) this.emojiPickerRight = '-50px'

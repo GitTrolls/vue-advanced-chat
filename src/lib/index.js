@@ -1,8 +1,11 @@
-import { defineCustomElement } from 'vue'
 import ChatWindow from './ChatWindow'
 
-export const VueAdvancedChat = defineCustomElement(ChatWindow)
+Object.defineProperty(ChatWindow, 'install', {
+	configurable: false,
+	enumerable: false,
+	value(Vue) {
+		Vue.component('ChatWindow', ChatWindow)
+	}
+})
 
-export function register() {
-	customElements.define('vue-advanced-chat', VueAdvancedChat)
-}
+export default ChatWindow

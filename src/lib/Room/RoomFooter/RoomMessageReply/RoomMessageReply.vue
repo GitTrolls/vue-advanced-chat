@@ -18,7 +18,7 @@
 							:link-options="linkOptions"
 							:reply="true"
 						>
-							<template v-for="(i, name) in $slots" #[name]="data">
+							<template v-for="(i, name) in $scopedSlots" #[name]="data">
 								<slot :name="name" v-bind="data" />
 							</template>
 						</format-message>
@@ -36,7 +36,7 @@
 					:src="firstFile.url"
 					class="vac-audio-reply"
 				>
-					<template v-for="(i, name) in $slots" #[name]="data">
+					<template v-for="(i, name) in $scopedSlots" #[name]="data">
 						<slot :name="name" v-bind="data" />
 					</template>
 				</audio-player>
@@ -76,11 +76,11 @@ import FormatMessage from '../../../../components/FormatMessage/FormatMessage'
 
 import AudioPlayer from '../../RoomMessage/AudioPlayer/AudioPlayer'
 
-import {
+const {
 	isAudioFile,
 	isImageFile,
 	isVideoFile
-} from '../../../../utils/media-file'
+} = require('../../../../utils/media-file')
 
 export default {
 	name: 'RoomMessageReply',
@@ -101,9 +101,7 @@ export default {
 
 	computed: {
 		footerHeight() {
-			return document
-				.querySelector('vue-advanced-chat')
-				.shadowRoot.getElementById('room-footer').clientHeight
+			return document.getElementById('room-footer').clientHeight
 		},
 		firstFile() {
 			return this.messageReply?.files?.length ? this.messageReply.files[0] : {}

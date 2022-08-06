@@ -38,7 +38,7 @@
 			:link-options="linkOptions"
 			@reset-message="resetMessage"
 		>
-			<template v-for="(i, name) in $slots" #[name]="data">
+			<template v-for="(i, name) in $scopedSlots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
 		</room-message-reply>
@@ -48,7 +48,7 @@
 			@remove-file="removeFile"
 			@reset-message="resetMessage"
 		>
-			<template v-for="(i, name) in $slots" #[name]="data">
+			<template v-for="(i, name) in $scopedSlots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
 		</room-files>
@@ -188,6 +188,7 @@
 
 <script>
 import { Database } from 'emoji-picker-element'
+import vClickOutside from 'v-click-outside'
 
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
 import EmojiPickerContainer from '../../../components/EmojiPickerContainer/EmojiPickerContainer'
@@ -198,11 +199,10 @@ import RoomUsersTag from './RoomUsersTag/RoomUsersTag'
 import RoomEmojis from './RoomEmojis/RoomEmojis'
 import RoomTemplatesText from './RoomTemplatesText/RoomTemplatesText'
 
-import vClickOutside from '../../../utils/on-click-outside'
 import filteredItems from '../../../utils/filter-items'
 import Recorder from '../../../utils/recorder'
 
-import { detectMobile } from '../../../utils/mobile-detection'
+const { detectMobile } = require('../../../utils/mobile-detection')
 
 export default {
 	name: 'RoomFooter',
@@ -218,7 +218,7 @@ export default {
 	},
 
 	directives: {
-		clickOutside: vClickOutside
+		clickOutside: vClickOutside.directive
 	},
 
 	props: {
@@ -361,12 +361,15 @@ export default {
 		})
 
 		this.getTextareaRef().addEventListener('blur', () => {
-			this.resetFooterList()
+			setTimeout(() => {
+				this.resetFooterList()
+			}, 100)
+
 			if (isMobile) setTimeout(() => (this.keepKeyboardOpen = false))
 		})
 	},
 
-	beforeUnmount() {
+	beforeDestroy() {
 		this.stopRecorder()
 	},
 
@@ -810,8 +813,8 @@ export default {
 			this.isRecording = false
 
 			return new Recorder({
-				bitRate: Number(this.audioBitRate),
-				sampleRate: Number(this.audioSampleRate),
+				bitRate: this.audioBitRate,
+				sampleRate: this.audioSampleRate,
 				beforeRecording: null,
 				afterRecording: null,
 				pauseRecording: null,

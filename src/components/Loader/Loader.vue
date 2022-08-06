@@ -8,7 +8,7 @@
 				'vac-container-top': infinite
 			}"
 		>
-			<slot name="spinner-icon">
+			<slot name="spinner-icon" v-bind="{ show, infinite }">
 				<div id="vac-circle" />
 			</slot>
 		</div>
@@ -17,7 +17,7 @@
 
 <script>
 export default {
-	name: 'AppLoader',
+	name: 'Loader',
 
 	props: {
 		show: { type: Boolean, default: false },
