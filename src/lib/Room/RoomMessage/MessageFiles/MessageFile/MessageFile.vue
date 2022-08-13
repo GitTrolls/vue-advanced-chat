@@ -18,7 +18,7 @@
 				:show="isImageLoading"
 				:style="{ top: `${imageResponsive.loaderTop}px` }"
 			>
-				<template v-for="(idx, name) in $scopedSlots" #[name]="data">
+				<template v-for="(idx, name) in $slots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
 			</loader>
@@ -79,7 +79,7 @@ import Loader from '../../../../../components/Loader/Loader'
 import ProgressBar from '../../../../../components/ProgressBar/ProgressBar'
 import SvgIcon from '../../../../../components/SvgIcon/SvgIcon'
 
-const { isImageFile, isVideoFile } = require('../../../../../utils/media-file')
+import { isImageFile, isVideoFile } from '../../../../../utils/media-file'
 
 export default {
 	name: 'MessageFile',

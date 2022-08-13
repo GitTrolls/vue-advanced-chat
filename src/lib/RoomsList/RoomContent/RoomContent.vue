@@ -53,16 +53,18 @@
 					</div>
 					<format-message
 						v-else-if="room.lastMessage"
+						:room-list="true"
 						:content="getLastMessage"
 						:deleted="!!room.lastMessage.deleted && !typingUsers"
 						:users="room.users"
+						:text-messages="textMessages"
 						:linkify="false"
 						:text-formatting="textFormatting"
 						:link-options="linkOptions"
 						:single-line="true"
 					>
-						<template #deleted-icon="data">
-							<slot name="deleted-icon" v-bind="data" />
+						<template #deleted-icon>
+							<slot name="deleted-icon" />
 						</template>
 					</format-message>
 					<div
@@ -115,13 +117,12 @@
 </template>
 
 <script>
-import vClickOutside from 'v-click-outside'
-
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
 import FormatMessage from '../../../components/FormatMessage/FormatMessage'
 
+import vClickOutside from '../../../utils/on-click-outside'
 import typingText from '../../../utils/typing-text'
-const { isAudioFile } = require('../../../utils/media-file')
+import { isAudioFile } from '../../../utils/media-file'
 
 export default {
 	name: 'RoomsContent',
@@ -131,7 +132,7 @@ export default {
 	},
 
 	directives: {
-		clickOutside: vClickOutside.directive
+		clickOutside: vClickOutside
 	},
 
 	props: {
@@ -156,9 +157,7 @@ export default {
 			const isTyping = this.typingUsers
 			if (isTyping) return isTyping
 
-			const content = this.room.lastMessage.deleted
-				? this.textMessages.MESSAGE_DELETED
-				: this.room.lastMessage.content
+			const content = this.room.lastMessage.content
 
 			if (this.room.users.length <= 2) {
 				return content
@@ -200,7 +199,6 @@ export default {
 		},
 		formattedDuration() {
 			const file = this.room.lastMessage?.files?.[0]
-
 			if (file) {
 				if (!file.duration) {
 					return `${file.name}.${file.extension}`
@@ -209,7 +207,6 @@ export default {
 				let s = Math.floor(file.duration)
 				return (s - (s %= 60)) / 60 + (s > 9 ? ':' : ':0') + s
 			}
-
 			return ''
 		},
 		isAudio() {

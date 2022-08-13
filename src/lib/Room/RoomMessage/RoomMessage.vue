@@ -9,15 +9,17 @@
 		</div>
 
 		<div v-if="message.system" class="vac-card-info vac-card-system">
-			<slot name="system-message" v-bind="{ message }">
+			<slot :name="'message_' + message._id">
 				<format-message
 					:content="message.content"
+					:deleted="!!message.deleted"
 					:users="roomUsers"
+					:text-messages="textMessages"
 					:text-formatting="textFormatting"
 					:link-options="linkOptions"
 					@open-user-tag="openUserTag"
 				>
-					<template v-for="(i, name) in $scopedSlots" #[name]="data">
+					<template v-for="(i, name) in $slots" #[name]="data">
 						<slot :name="name" v-bind="data" />
 					</template>
 				</format-message>
@@ -30,7 +32,7 @@
 			:class="{ 'vac-offset-current': message.senderId === currentUserId }"
 			@click="selectMessage"
 		>
-			<slot name="message" v-bind="{ message }">
+			<slot :name="'message_' + message._id">
 				<div
 					v-if="message.avatar && message.senderId !== currentUserId"
 					class="vac-avatar"
@@ -75,27 +77,24 @@
 							:text-formatting="textFormatting"
 							:link-options="linkOptions"
 						>
-							<template v-for="(i, name) in $scopedSlots" #[name]="data">
+							<template v-for="(i, name) in $slots" #[name]="data">
 								<slot :name="name" v-bind="data" />
 							</template>
 						</message-reply>
 
-						<div v-if="message.deleted">
-							<slot name="deleted-icon">
-								<svg-icon name="deleted" class="vac-icon-deleted" />
-							</slot>
-							<span>{{ textMessages.MESSAGE_DELETED }}</span>
-						</div>
-
 						<format-message
-							v-else-if="!message.files || !message.files.length"
+							v-else-if="
+								!!message.deleted || !message.files || !message.files.length
+							"
 							:content="message.content"
+							:deleted="!!message.deleted"
 							:users="roomUsers"
 							:text-formatting="textFormatting"
+							:text-messages="textMessages"
 							:link-options="linkOptions"
 							@open-user-tag="openUserTag"
 						>
-							<template v-for="(i, name) in $scopedSlots" #[name]="data">
+							<template v-for="(i, name) in $slots" #[name]="data">
 								<slot :name="name" v-bind="data" />
 							</template>
 						</format-message>
@@ -111,7 +110,7 @@
 							@open-file="openFile"
 							@open-user-tag="openUserTag"
 						>
-							<template v-for="(i, name) in $scopedSlots" #[name]="data">
+							<template v-for="(i, name) in $slots" #[name]="data">
 								<slot :name="name" v-bind="data" />
 							</template>
 						</message-files>
@@ -124,7 +123,7 @@
 								@update-progress-time="progressTime = $event"
 								@hover-audio-progress="hoverAudioProgress = $event"
 							>
-								<template v-for="(i, name) in $scopedSlots" #[name]="data">
+								<template v-for="(i, name) in $slots" #[name]="data">
 									<slot :name="name" v-bind="data" />
 								</template>
 							</audio-player>
@@ -171,7 +170,7 @@
 							@message-action-handler="messageActionHandler"
 							@send-message-reaction="sendMessageReaction"
 						>
-							<template v-for="(i, name) in $scopedSlots" #[name]="data">
+							<template v-for="(i, name) in $slots" #[name]="data">
 								<slot :name="name" v-bind="data" />
 							</template>
 						</message-actions>
@@ -193,9 +192,7 @@
 						}"
 						@click="$emit('open-failed-message', { message })"
 					>
-						<div class="vac-failure-text">
-							!
-						</div>
+						<div class="vac-failure-text">!</div>
 					</div>
 				</slot>
 				<div
@@ -222,8 +219,8 @@ import MessageActions from './MessageActions/MessageActions'
 import MessageReactions from './MessageReactions/MessageReactions'
 import AudioPlayer from './AudioPlayer/AudioPlayer'
 
-const { messagesValidation } = require('../../../utils/data-validation')
-const { isAudioFile } = require('../../../utils/media-file')
+import { messagesValidation } from '../../../utils/data-validation'
+import { isAudioFile } from '../../../utils/media-file'
 
 export default {
 	name: 'RoomMessage',

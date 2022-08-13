@@ -9,7 +9,7 @@
 				:message-selection-enabled="messageSelectionEnabled"
 				@open-file="$emit('open-file', $event)"
 			>
-				<template v-for="(i, name) in $scopedSlots" #[name]="data">
+				<template v-for="(i, name) in $slots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
 			</message-file>
@@ -51,7 +51,7 @@
 			:link-options="linkOptions"
 			@open-user-tag="$emit('open-user-tag', $event)"
 		>
-			<template v-for="(i, name) in $scopedSlots" #[name]="data">
+			<template v-for="(i, name) in $slots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
 		</format-message>
@@ -65,7 +65,7 @@ import ProgressBar from '../../../../components/ProgressBar/ProgressBar'
 
 import MessageFile from './MessageFile/MessageFile'
 
-const { isImageVideoFile } = require('../../../../utils/media-file')
+import { isImageVideoFile } from '../../../../utils/media-file'
 
 export default {
 	name: 'MessageFiles',

@@ -25,7 +25,7 @@
 			@update-progress-time="progressTime = $event"
 			@hover-audio-progress="hoverAudioProgress = $event"
 		>
-			<template v-for="(i, name) in $scopedSlots" #[name]="data">
+			<template v-for="(i, name) in $slots" #[name]="data">
 				<slot :name="name" v-bind="data" />
 			</template>
 		</audio-player>
@@ -55,7 +55,7 @@
 				:link-options="linkOptions"
 				:reply="true"
 			>
-				<template v-for="(i, name) in $scopedSlots" #[name]="data">
+				<template v-for="(i, name) in $slots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
 			</format-message>
@@ -69,11 +69,11 @@ import FormatMessage from '../../../../components/FormatMessage/FormatMessage'
 
 import AudioPlayer from '../AudioPlayer/AudioPlayer'
 
-const {
+import {
 	isAudioFile,
 	isImageFile,
 	isVideoFile
-} = require('../../../../utils/media-file')
+} from '../../../../utils/media-file'
 
 export default {
 	name: 'MessageReply',
