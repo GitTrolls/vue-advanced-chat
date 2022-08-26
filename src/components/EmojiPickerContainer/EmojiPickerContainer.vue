@@ -5,13 +5,7 @@
 			:class="{ 'vac-emoji-reaction': emojiReaction }"
 			@click="openEmoji"
 		>
-			<slot
-				:name="
-					messageId
-						? 'emoji-picker-reaction-icon_' + messageId
-						: 'emoji-picker-icon'
-				"
-			>
+			<slot name="emoji-picker-icon">
 				<svg-icon name="emoji" :param="emojiReaction ? 'reaction' : ''" />
 			</slot>
 		</div>
@@ -28,7 +22,7 @@
 						display: emojiPickerTop || !emojiReaction ? 'initial' : 'none'
 					}"
 				>
-					<emoji-picker v-pre ref="emojiPicker" v-if="emojiOpened" />
+					<emoji-picker v-if="emojiOpened" ref="emojiPicker" />
 				</div>
 			</transition>
 		</template>
@@ -48,8 +42,7 @@ export default {
 		emojiOpened: { type: Boolean, default: false },
 		emojiReaction: { type: Boolean, default: false },
 		positionTop: { type: Boolean, default: false },
-		positionRight: { type: Boolean, default: false },
-		messageId: { type: String, default: '' }
+		positionRight: { type: Boolean, default: false }
 	},
 
 	emits: ['add-emoji', 'open-emoji'],
@@ -121,9 +114,7 @@ export default {
 		},
 		setEmojiPickerPosition(clientY, innerWidth, innerHeight) {
 			const mobileSize = innerWidth < 500 || innerHeight < 700
-			const roomFooterRef = document
-				.querySelector('vue-advanced-chat')
-				.shadowRoot.getElementById('room-footer')
+			const roomFooterRef = document.getElementById('room-footer')
 
 			if (!roomFooterRef) {
 				if (mobileSize) this.emojiPickerRight = '-50px'

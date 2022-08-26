@@ -5,7 +5,9 @@
 			<button type="submit" :disabled="disableForm || !addRoomUsername">
 				Create Room
 			</button>
-			<button class="button-cancel" @click="addNewRoom = false">Cancel</button>
+			<button class="button-cancel" @click="addNewRoom = false">
+				Cancel
+			</button>
 		</form>
 
 		<form v-if="inviteRoomId" @submit.prevent="addRoomUser">
@@ -13,12 +15,16 @@
 			<button type="submit" :disabled="disableForm || !invitedUsername">
 				Add User
 			</button>
-			<button class="button-cancel" @click="inviteRoomId = null">Cancel</button>
+			<button class="button-cancel" @click="inviteRoomId = null">
+				Cancel
+			</button>
 		</form>
 
 		<form v-if="removeRoomId" @submit.prevent="deleteRoomUser">
 			<select v-model="removeUserId">
-				<option default value="">Select User</option>
+				<option default value="">
+					Select User
+				</option>
 				<option v-for="user in removeUsers" :key="user._id" :value="user._id">
 					{{ user.username }}
 				</option>
@@ -26,51 +32,48 @@
 			<button type="submit" :disabled="disableForm || !removeUserId">
 				Remove User
 			</button>
-			<button class="button-cancel" @click="removeRoomId = null">Cancel</button>
+			<button class="button-cancel" @click="removeRoomId = null">
+				Cancel
+			</button>
 		</form>
 
-		<vue-advanced-chat
-			ref="chatWindow"
+		<chat-window
 			:height="screenHeight"
 			:theme="theme"
-			:styles="JSON.stringify(styles)"
+			:styles="styles"
 			:current-user-id="currentUserId"
 			:room-id="roomId"
-			:rooms="JSON.stringify(loadedRooms)"
+			:rooms="loadedRooms"
 			:loading-rooms="loadingRooms"
-			:rooms-loaded="roomsLoaded"
-			:messages="JSON.stringify(messages)"
+			:messages="messages"
 			:messages-loaded="messagesLoaded"
+			:rooms-loaded="roomsLoaded"
+			:room-actions="roomActions"
+			:menu-actions="menuActions"
+			:message-selection-actions="messageSelectionActions"
 			:room-message="roomMessage"
-			:room-actions="JSON.stringify(roomActions)"
-			:menu-actions="JSON.stringify(menuActions)"
-			:message-selection-actions="JSON.stringify(messageSelectionActions)"
-			:templates-text="JSON.stringify(templatesText)"
+			:templates-text="templatesText"
 			@fetch-more-rooms="fetchMoreRooms"
-			@fetch-messages="fetchMessages($event.detail[0])"
-			@send-message="sendMessage($event.detail[0])"
-			@edit-message="editMessage($event.detail[0])"
-			@delete-message="deleteMessage($event.detail[0])"
-			@open-file="openFile($event.detail[0])"
-			@open-user-tag="openUserTag($event.detail[0])"
-			@add-room="addRoom($event.detail[0])"
-			@room-action-handler="menuActionHandler($event.detail[0])"
-			@menu-action-handler="menuActionHandler($event.detail[0])"
-			@message-selection-action-handler="
-				messageSelectionActionHandler($event.detail[0])
-			"
-			@send-message-reaction="sendMessageReaction($event.detail[0])"
-			@typing-message="typingMessage($event.detail[0])"
-			@toggle-rooms-list="$emit('show-demo-options', $event.detail[0].opened)"
+			@fetch-messages="fetchMessages"
+			@send-message="sendMessage"
+			@edit-message="editMessage"
+			@delete-message="deleteMessage"
+			@open-file="openFile"
+			@open-user-tag="openUserTag"
+			@add-room="addRoom"
+			@room-action-handler="menuActionHandler"
+			@menu-action-handler="menuActionHandler"
+			@message-selection-action-handler="messageSelectionActionHandler"
+			@send-message-reaction="sendMessageReaction"
+			@typing-message="typingMessage"
+			@toggle-rooms-list="$emit('show-demo-options', $event.opened)"
 		>
-			<!-- <div
-				v-for="message in messages"
-				:slot="'message_' + message._id"
-				:key="message._id"
-			>
-				New message container
-			</div> -->
-		</vue-advanced-chat>
+			<!-- <template #emoji-picker="{ emojiOpened, addEmoji }">
+				<button @click="addEmoji({ unicode: '😁' })">
+					{{ emojiOpened }}
+				</button>
+			</template> -->
+		</chat-window>
 	</div>
 </template>
 
@@ -79,15 +82,18 @@ import * as firestoreService from '@/database/firestore'
 import * as firebaseService from '@/database/firebase'
 import * as storageService from '@/database/storage'
 import { parseTimestamp, formatTimestamp } from '@/utils/dates'
-import logoAvatar from '@/assets/logo.png'
 
-// import { register } from 'vue-advanced-chat'
-// import { register } from './../../dist/vue-advanced-chat.es.js'
-import { register } from './../../src/lib/index.js'
-import styles from './../../src/styles/index.scss'
-register()
+import ChatWindow from './../../src/lib/ChatWindow'
+// import ChatWindow, { Rooms } from 'vue-advanced-chat'
+// import ChatWindow from 'vue-advanced-chat'
+// import 'vue-advanced-chat/dist/vue-advanced-chat.css'
+// import ChatWindow from './../../dist/vue-advanced-chat.umd.min.js'
 
 export default {
+	components: {
+		ChatWindow
+	},
+
 	props: {
 		currentUserId: { type: String, required: true },
 		theme: { type: String, required: true },
@@ -166,19 +172,11 @@ export default {
 	},
 
 	mounted() {
-		if (import.meta.env.MODE === 'development') {
-			this.addCss()
-		}
 		this.fetchRooms()
 		firebaseService.updateUserOnlineStatus(this.currentUserId)
 	},
 
 	methods: {
-		addCss() {
-			const style = document.createElement('style')
-			style.innerHTML = styles
-			this.$refs.chatWindow.shadowRoot.appendChild(style)
-		},
 		resetRooms() {
 			this.loadingRooms = true
 			this.loadingLastMessageByRoom = 0
@@ -270,7 +268,7 @@ export default {
 				const roomAvatar =
 					roomContacts.length === 1 && roomContacts[0].avatar
 						? roomContacts[0].avatar
-						: logoAvatar
+						: require('@/assets/logo.png')
 
 				formattedRooms.push({
 					...room,
@@ -344,7 +342,6 @@ export default {
 			return {
 				...message,
 				...{
-					_id: message.id,
 					content,
 					senderId: message.sender_id,
 					timestamp: formatTimestamp(
@@ -357,11 +354,7 @@ export default {
 					new:
 						message.sender_id !== this.currentUserId &&
 						(!message.seen || !message.seen[this.currentUserId]),
-					lastMessage: {
-						...message.lastMessage,
-						_id: message.id,
-						senderId: message.sender_id
-					}
+					lastMessage: { ...message.lastMessage, senderId: message.sender_id }
 				}
 			}
 		},
@@ -371,6 +364,7 @@ export default {
 
 			if (options.reset) {
 				this.resetMessages()
+				this.roomId = room.roomId
 			}
 
 			if (this.previousLastLoadedMessage && !this.lastLoadedMessage) {
@@ -387,9 +381,7 @@ export default {
 					if (this.selectedRoom !== room.roomId) return
 
 					if (data.length === 0 || data.length < this.messagesPerPage) {
-						setTimeout(() => {
-							this.messagesLoaded = true
-						}, 0)
+						setTimeout(() => (this.messagesLoaded = true), 0)
 					}
 
 					if (options.reset) this.messages = []

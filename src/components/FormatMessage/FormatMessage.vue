@@ -29,23 +29,10 @@
 					:rel="message.href ? linkOptions.rel : null"
 					@click="openTag(message)"
 				>
-					<template v-if="deleted">
-						<slot
-							:name="
-								roomList
-									? 'deleted-icon-room_' + roomId
-									: 'deleted-icon_' + messageId
-							"
-						>
-							<svg-icon
-								name="deleted"
-								class="vac-icon-deleted"
-								:class="{ 'vac-icon-deleted-room': roomList }"
-							/>
-						</slot>
-						{{ textMessages.MESSAGE_DELETED }}
-					</template>
-					<template v-else-if="message.url && message.image">
+					<slot name="deleted-icon" v-bind="{ deleted }">
+						<svg-icon v-if="deleted" name="deleted" class="vac-icon-deleted" />
+					</slot>
+					<template v-if="message.url && message.image">
 						<div class="vac-image-link-container">
 							<div
 								class="vac-image-link"
@@ -60,7 +47,9 @@
 						</div>
 					</template>
 					<template v-else>
-						<span v-html="message.value" />
+						<span v-html="message.value">
+							{{ message.value }}
+						</span>
 					</template>
 				</component>
 			</div>
@@ -80,9 +69,6 @@ export default {
 	components: { SvgIcon },
 
 	props: {
-		messageId: { type: String, default: '' },
-		roomId: { type: String, default: '' },
-		roomList: { type: Boolean, default: false },
 		content: { type: [String, Number], required: true },
 		deleted: { type: Boolean, default: false },
 		users: { type: Array, default: () => [] },
@@ -90,7 +76,6 @@ export default {
 		singleLine: { type: Boolean, default: false },
 		reply: { type: Boolean, default: false },
 		textFormatting: { type: Object, required: true },
-		textMessages: { type: Object, default: () => {} },
 		linkOptions: { type: Object, required: true }
 	},
 
@@ -98,10 +83,6 @@ export default {
 
 	computed: {
 		linkifiedMessage() {
-			if (this.deleted) {
-				return [{ value: this.textMessages.MESSAGE_DELETED }]
-			}
-
 			const message = formatString(
 				this.formatTags(this.content),
 				this.linkify && !this.linkOptions.disabled,
@@ -124,12 +105,7 @@ export default {
 			return message
 		},
 		formattedContent() {
-			if (this.deleted) {
-				console.log('heuy')
-				return this.textMessages.MESSAGE_DELETED
-			} else {
-				return this.formatTags(this.content)
-			}
+			return this.formatTags(this.content)
 		}
 	},
 

@@ -1,6 +1,6 @@
 <template>
 	<div class="vac-room-header vac-app-border-b">
-		<slot name="room-header">
+		<slot name="room-header" v-bind="{ room, typingUsers, userStatus }">
 			<div class="vac-room-wrapper">
 				<transition name="vac-slide-up">
 					<div v-if="messageSelectionEnabled" class="vac-room-selection">
@@ -33,10 +33,7 @@
 					<div
 						v-if="!singleRoom"
 						class="vac-svg-button vac-toggle-button"
-						:class="{
-							'vac-rotate-icon-init': !isMobile,
-							'vac-rotate-icon': !showRoomsList && !isMobile
-						}"
+						:class="{ 'vac-rotate-icon-init': !isMobile, 'vac-rotate-icon': !showRoomsList && !isMobile }"
 						@click="$emit('toggle-rooms-list')"
 					>
 						<slot name="toggle-icon">
@@ -48,14 +45,17 @@
 						:class="{ 'vac-item-clickable': roomInfoEnabled }"
 						@click="$emit('room-info')"
 					>
-						<slot name="room-header-avatar">
+						<slot name="room-header-avatar" v-bind="{ room }">
 							<div
 								v-if="room.avatar"
 								class="vac-avatar"
 								:style="{ 'background-image': `url('${room.avatar}')` }"
 							/>
 						</slot>
-						<slot name="room-header-info">
+						<slot
+							name="room-header-info"
+							v-bind="{ room, typingUsers, userStatus }"
+						>
 							<div class="vac-text-ellipsis">
 								<div class="vac-room-name vac-text-ellipsis">
 									{{ room.roomName }}
@@ -105,9 +105,10 @@
 </template>
 
 <script>
+import vClickOutside from 'v-click-outside'
+
 import SvgIcon from '../../../components/SvgIcon/SvgIcon'
 
-import vClickOutside from '../../../utils/on-click-outside'
 import typingText from '../../../utils/typing-text'
 
 export default {
@@ -117,7 +118,7 @@ export default {
 	},
 
 	directives: {
-		clickOutside: vClickOutside
+		clickOutside: vClickOutside.directive
 	},
 
 	props: {

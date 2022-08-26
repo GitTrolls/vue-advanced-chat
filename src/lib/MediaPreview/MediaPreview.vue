@@ -33,7 +33,7 @@
 <script>
 import SvgIcon from '../../components/SvgIcon/SvgIcon'
 
-import { isImageFile, isVideoFile } from '../../utils/media-file'
+const { isImageFile, isVideoFile } = require('../../utils/media-file')
 
 export default {
 	name: 'MediaPreview',

@@ -16,11 +16,9 @@
 			<loader
 				v-else
 				:show="isImageLoading"
-				type="message-file"
-				:message-id="message._id"
 				:style="{ top: `${imageResponsive.loaderTop}px` }"
 			>
-				<template v-for="(idx, name) in $slots" #[name]="data">
+				<template v-for="(idx, name) in $scopedSlots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
 			</loader>
@@ -46,7 +44,7 @@
 							class="vac-svg-button vac-button-view"
 							@click="openFile($event, 'preview')"
 						>
-							<slot :name="'eye-icon_' + message._id">
+							<slot name="eye-icon">
 								<svg-icon name="eye" />
 							</slot>
 						</div>
@@ -54,7 +52,7 @@
 							class="vac-svg-button vac-button-download"
 							@click="openFile($event, 'download')"
 						>
-							<slot :name="'document-icon_' + message._id">
+							<slot name="document-icon">
 								<svg-icon name="document" />
 							</slot>
 						</div>
@@ -81,7 +79,7 @@ import Loader from '../../../../../components/Loader/Loader'
 import ProgressBar from '../../../../../components/ProgressBar/ProgressBar'
 import SvgIcon from '../../../../../components/SvgIcon/SvgIcon'
 
-import { isImageFile, isVideoFile } from '../../../../../utils/media-file'
+const { isImageFile, isVideoFile } = require('../../../../../utils/media-file')
 
 export default {
 	name: 'MessageFile',

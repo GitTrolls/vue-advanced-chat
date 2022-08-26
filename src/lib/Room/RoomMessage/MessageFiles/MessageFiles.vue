@@ -1,23 +1,23 @@
 <template>
 	<div class="vac-message-files-container">
-		<div v-for="(file, i) in imageVideoFiles" :key="i + 'iv'">
+		<div v-for="(file, idx) in imageVideoFiles" :key="idx + 'iv'">
 			<message-file
 				:file="file"
 				:current-user-id="currentUserId"
 				:message="message"
-				:index="i"
+				:index="idx"
 				:message-selection-enabled="messageSelectionEnabled"
 				@open-file="$emit('open-file', $event)"
 			>
-				<template v-for="(idx, name) in $slots" #[name]="data">
+				<template v-for="(i, name) in $scopedSlots" #[name]="data">
 					<slot :name="name" v-bind="data" />
 				</template>
 			</message-file>
 		</div>
 
 		<div
-			v-for="(file, i) in otherFiles"
-			:key="i + 'a'"
+			v-for="(file, idx) in otherFiles"
+			:key="idx + 'a'"
 			class="vac-file-wrapper"
 		>
 			<progress-bar
@@ -45,13 +45,16 @@
 		</div>
 
 		<format-message
-			:message-id="message._id"
 			:content="message.content"
 			:users="roomUsers"
 			:text-formatting="textFormatting"
 			:link-options="linkOptions"
 			@open-user-tag="$emit('open-user-tag', $event)"
-		/>
+		>
+			<template v-for="(i, name) in $scopedSlots" #[name]="data">
+				<slot :name="name" v-bind="data" />
+			</template>
+		</format-message>
 	</div>
 </template>
 
@@ -62,7 +65,7 @@ import ProgressBar from '../../../../components/ProgressBar/ProgressBar'
 
 import MessageFile from './MessageFile/MessageFile'
 
-import { isImageVideoFile } from '../../../../utils/media-file'
+const { isImageVideoFile } = require('../../../../utils/media-file')
 
 export default {
 	name: 'MessageFiles',

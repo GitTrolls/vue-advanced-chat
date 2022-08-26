@@ -11,17 +11,13 @@
 						:file="file"
 						:index="i"
 						@remove-file="$emit('remove-file', $event)"
-					>
-						<template v-for="(idx, name) in $slots" #[name]="data">
-							<slot :name="name" v-bind="data" />
-						</template>
-					</room-file>
+					/>
 				</div>
 			</div>
 
 			<div class="vac-icon-close">
 				<div class="vac-svg-button" @click="$emit('reset-message')">
-					<slot name="files-close-icon">
+					<slot name="reply-close-icon">
 						<svg-icon name="close-outline" />
 					</slot>
 				</div>
@@ -50,9 +46,7 @@ export default {
 
 	computed: {
 		footerHeight() {
-			return document
-				.querySelector('vue-advanced-chat')
-				.shadowRoot.getElementById('room-footer').clientHeight
+			return document.getElementById('room-footer').clientHeight
 		}
 	}
 }
