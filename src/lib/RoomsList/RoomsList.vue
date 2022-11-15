@@ -170,11 +170,15 @@ export default {
 				this.observer.disconnect()
 			}
 
-			const loader = this.$el.querySelector('#infinite-loader-rooms')
+			const loader = document
+				.querySelector('vue-advanced-chat')
+				.shadowRoot.getElementById('infinite-loader-rooms')
 
 			if (loader) {
 				const options = {
-					root: this.$el.querySelector('#rooms-list'),
+					root: document
+						.querySelector('vue-advanced-chat')
+						.shadowRoot.getElementById('rooms-list'),
 					rootMargin: `${this.scrollDistance}px`,
 					threshold: 0
 				}
