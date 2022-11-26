@@ -1,6 +1,6 @@
 import Vue, { PluginFunction } from 'vue'
 
-export function register(): void
+export function register(): void;
 
 export type StringNumber = string | number
 
@@ -10,7 +10,7 @@ export interface UserStatus {
 }
 
 export interface RoomUser {
-	_id: string
+	_id: String
 	username: string
 	avatar: string
 	status: UserStatus
@@ -21,9 +21,7 @@ export type RoomUsers = RoomUser[]
 export interface MessageFile {
 	name: string
 	type: string
-	extension: string
 	url: string
-	localUrl: string
 	preview: string
 	size?: number
 	audio?: boolean
@@ -33,7 +31,7 @@ export interface MessageFile {
 
 export interface LastMessage {
 	content: string
-	senderId: string
+	senderId: String
 	username?: string
 	timestamp?: string
 	saved?: boolean
@@ -44,14 +42,14 @@ export interface LastMessage {
 }
 
 export interface Room {
-	roomId: string
+	roomId: String
 	roomName: string
-	avatar: string
+	avatar: String
 	users: RoomUsers
-	unreadCount?: number
+	unreadCount?: Number
 	index?: StringNumber | Date
 	lastMessage?: LastMessage
-	typingUsers?: string[]
+	typingUsers?: String[]
 }
 
 export type Rooms = Room[]
@@ -61,10 +59,10 @@ export interface MessageReactions {
 }
 
 export interface Message {
-	_id: string
+	_id: StringNumber
 	indexId?: StringNumber
 	content: string
-	senderId: string
+	senderId: String
 	username?: string
 	avatar?: string
 	date: string
@@ -136,12 +134,12 @@ export interface LinkOptions {
 
 export interface Props {
 	height?: string
-	'current-user-id': string
+	'current-user-id': String
 	rooms: Rooms
 	'rooms-order'?: 'desc' | 'asc'
 	'loading-rooms'?: boolean
 	'rooms-loaded'?: boolean
-	'room-id'?: string
+	'room-id'?: String
 	'load-first-room'?: boolean
 	'rooms-list-opened'?: boolean
 	messages: Messages
