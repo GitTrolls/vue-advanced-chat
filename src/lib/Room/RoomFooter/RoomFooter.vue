@@ -106,8 +106,10 @@
 				@paste="onPasteImage"
 				@keydown.tab.exact.prevent=""
 				@keydown.tab="selectItem"
-				@keydown.up="updateActiveUpOrDown($event, -1)"
-				@keydown.down="updateActiveUpOrDown($event, 1)"
+				@keydown.up.exact.prevent=""
+				@keydown.up="updateActiveUpOrDown(-1)"
+				@keydown.down.exact.prevent=""
+				@keydown.down="updateActiveUpOrDown(1)"
 			/>
 
 			<div class="vac-icon-textarea">
@@ -440,16 +442,13 @@ export default {
 				})
 			}
 		},
-		updateActiveUpOrDown(event, direction) {
+		updateActiveUpOrDown(direction) {
 			if (this.filteredEmojis.length) {
 				this.activeUpOrDownEmojis = direction
-        event.preventDefault()
 			} else if (this.filteredUsersTag.length) {
 				this.activeUpOrDownUsersTag = direction
-        event.preventDefault()
 			} else if (this.filteredTemplatesText.length) {
 				this.activeUpOrDownTemplatesText = direction
-        event.preventDefault()
 			}
 		},
 		selectItem() {
