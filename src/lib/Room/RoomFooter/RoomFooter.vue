@@ -106,10 +106,8 @@
 				@paste="onPasteImage"
 				@keydown.tab.exact.prevent=""
 				@keydown.tab="selectItem"
-				@keydown.up.exact.prevent=""
-				@keydown.up="updateActiveUpOrDown(-1)"
-				@keydown.down.exact.prevent=""
-				@keydown.down="updateActiveUpOrDown(1)"
+				@keydown.up="updateActiveUpOrDown($event, -1)"
+				@keydown.down="updateActiveUpOrDown($event, 1)"
 			/>
 
 			<div class="vac-icon-textarea">
@@ -132,6 +130,7 @@
 						<emoji-picker-container
 							:emoji-opened="emojiOpened"
 							:position-top="true"
+							:emoji-data-source="emojiDataSource"
 							@add-emoji="addEmoji"
 							@open-emoji="emojiOpened = $event"
 						>
@@ -243,7 +242,8 @@ export default {
 		audioSampleRate: { type: Number, required: true },
 		initReplyMessage: { type: Object, default: null },
 		initEditMessage: { type: Object, default: null },
-		droppedFiles: { type: Array, default: null }
+		droppedFiles: { type: Array, default: null },
+		emojiDataSource: { type: String, default: undefined }
 	},
 
 	emits: [
@@ -269,7 +269,7 @@ export default {
 			activeUpOrDownEmojis: null,
 			activeUpOrDownUsersTag: null,
 			activeUpOrDownTemplatesText: null,
-			emojisDB: new Database(),
+			emojisDB: new Database({ dataSource: this.emojiDataSource }),
 			emojiOpened: false,
 			keepKeyboardOpen: false,
 			filteredEmojis: [],
@@ -442,13 +442,16 @@ export default {
 				})
 			}
 		},
-		updateActiveUpOrDown(direction) {
+		updateActiveUpOrDown(event, direction) {
 			if (this.filteredEmojis.length) {
 				this.activeUpOrDownEmojis = direction
+        event.preventDefault()
 			} else if (this.filteredUsersTag.length) {
 				this.activeUpOrDownUsersTag = direction
+        event.preventDefault()
 			} else if (this.filteredTemplatesText.length) {
 				this.activeUpOrDownTemplatesText = direction
+        event.preventDefault()
 			}
 		},
 		selectItem() {

@@ -35,10 +35,11 @@
 		>
 			<slot :name="'message_' + message._id">
 				<slot
-					v-if="message.avatar && message.senderId !== currentUserId"
+					v-if="message.senderId !== currentUserId"
 					:name="'message-avatar_' + message._id"
 				>
 					<div
+            v-if="message.avatar"
 						class="vac-avatar"
 						:style="{ 'background-image': `url('${message.avatar}')` }"
 					/>
@@ -170,6 +171,7 @@
 							:message-hover="messageHover"
 							:hover-message-id="hoverMessageId"
 							:hover-audio-progress="hoverAudioProgress"
+							:emoji-data-source="emojiDataSource"
 							@update-message-hover="messageHover = $event"
 							@update-options-opened="optionsOpened = $event"
 							@update-emoji-opened="emojiOpened = $event"
@@ -202,10 +204,11 @@
 					</div>
 				</slot>
 				<slot
-					v-if="message.avatar && message.senderId === currentUserId"
+					v-if="message.senderId === currentUserId"
 					:name="'message-avatar_' + message._id"
 				>
 					<div
+            v-if="message.avatar"
 						class="vac-avatar vac-avatar-current"
 						:style="{ 'background-image': `url('${message.avatar}')` }"
 					/>
@@ -260,7 +263,8 @@ export default {
 		linkOptions: { type: Object, required: true },
 		usernameOptions: { type: Object, required: true },
 		messageSelectionEnabled: { type: Boolean, required: true },
-		selectedMessages: { type: Array, default: () => [] }
+		selectedMessages: { type: Array, default: () => [] },
+		emojiDataSource: { type: String, default: undefined }
 	},
 
 	emits: [

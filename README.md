@@ -86,7 +86,9 @@ Register `vue-advanced-chat` as a web component in your [config file](https://vu
 
 ```javascript
 compilerOptions: {
-  isCustomElement: tagName => tagName === 'vue-advanced-chat'
+  isCustomElement: tagName => {
+    return tagName === 'vue-advanced-chat' || tagName === 'emoji-picker'
+  }
 }
 ```
 
@@ -254,6 +256,7 @@ Otherwise, you need to pass those props as strings. For example: `[messages]="JS
 | `theme`(26)                         | `light` / `dark` | -        | `light`                                                                                                           |
 | `accepted-files`(27)                | String           | -        | `*`                                                                                                               |
 | `styles`(28)                        | [String, Object] | -        | (26)                                                                                                              |
+| `emoji-data-source`                 | String           | -        | `https://cdn.jsdelivr.net/npm/emoji-picker-element-data@%5E1/en/emojibase/data.json`                              |
 
 **(1)** `current-user-id` is required to display UI and trigger actions according to the user using the chat (ex: messages position on the right, etc.)
 
@@ -722,7 +725,7 @@ When clicking a button from your `message-selection-actions` array, `message-sel
 Then you can do anything you want with it. Ex:
 
 ```javascript
-messageActionHandler({ roomId, action, message }) {
+messageSelectionActionHandler({ roomId, action, message }) {
   switch (action.name) {
     case 'deleteMessages':
       // call a method to delete selected messaged
@@ -736,7 +739,7 @@ messageActionHandler({ roomId, action, message }) {
 
 **(10)** `textarea-action-handler` is the result of the [`textarea-action-enabled`](#props-api) prop.<br>
 
-**(11)** Array of files where each file contain: `{ blob, localURL, name, size, type, extension }`
+**(11)** Array of files where each file contain: `{ blob, localUrl, name, size, type, extension }`
 
 **(12)** `replyMessage` object is available when the user replied to another message by clicking the corresponding icon, and contains the message information that was clicked.
 
